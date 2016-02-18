@@ -1,0 +1,45 @@
+doctype html
+html
+	head
+		meta(charset='utf-8')
+		meta(http-equiv='X-UA-Compatible', content='IE=edge')
+		meta(name='viewport', content='width=device-width, initial-scale=1')
+		meta(name='description',content='Admin Genesis')
+		meta(name='author',content='JuLiAn')
+  
+	title= title
+	
+	link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+	link(rel='stylesheet', href='/stylesheets/simple-sidebar.css')
+	
+	
+	body
+	
+		#wrapper
+			#sidebar-wrapper
+				ul.sidebar-nav
+					li.sidebar-brand
+						a(href='#') Admin Gen&SiS
+					li
+						a(href='#') Statistiques
+					li
+						a(href='#') Noeuds
+					li
+						a(href='#') Simulateurs		
+					li
+						a(href='#') About		
+					li
+						a(href='#') Services	
+					li
+						a(href='#') Contact
+	
+			block content
+
+		script(type='text/javascript' src='/javascripts/jquery.js')
+		script(type='text/javascript' src='/javascripts/bootstrap.min.js')
+	
+		script(type='text/javascript').
+			$("#menu-toggle").click(function(e) {
+				e.preventDefault();
+				$("#wrapper").toggleClass("toggled");
+			});
