@@ -1,451 +1,477 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
-"use strict";
+'use strict';
 
 var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+var PropTypes = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null).PropTypes;
+var Router = (typeof window !== "undefined" ? window['ReactRouter'] : typeof global !== "undefined" ? global['ReactRouter'] : null).Router;
+var Route = (typeof window !== "undefined" ? window['ReactRouter'] : typeof global !== "undefined" ? global['ReactRouter'] : null).Route;
+var Link = (typeof window !== "undefined" ? window['ReactRouter'] : typeof global !== "undefined" ? global['ReactRouter'] : null).Link;
 
-var Api = React.createClass({
-	displayName: "Api",
+var App = React.createClass({
+	displayName: 'App',
 
-	getInitialState: function getInitialState() {
-		return { data: [] };
+
+	propTypes: {
+		children: PropTypes.object
 	},
 
-	componentDidMount: function componentDidMount() {},
+	getInitialState: function getInitialState() {
+		return { menuToggle: "" };
+	},
 
-	select: function select() {
-		if (this.props.onClick) {
-			this.props.onClick(this.props.api);
-		}
+	toggleMenu: function toggleMenu(event) {
+		event.preventDefault();
+		if (this.state.menuToggle == 'toggled') this.setState({ menuToggle: "" });else this.setState({ menuToggle: "toggled" });
 	},
 
 	render: function render() {
-
-		var view = React.createElement(
-			"a",
-			{ className: "btn btn-default btn-xs", href: "#", role: "button", onClick: this.select },
-			React.createElement("span", { className: "glyphicon glyphicon-eye-open", "aria-hidden": "true" }),
-			" View"
-		);
-
 		return React.createElement(
-			"tr",
-			null,
+			'div',
+			{ id: 'wrapper', className: this.state.menuToggle },
 			React.createElement(
-				"th",
-				{ scope: "row" },
-				this.props.index
+				'div',
+				{ id: 'sidebar-wrapper' },
+				React.createElement(
+					'ul',
+					{ className: 'sidebar-nav' },
+					React.createElement(
+						'li',
+						{ className: 'sidebar-brand' },
+						React.createElement(
+							Link,
+							{ to: '/' },
+							React.createElement(
+								'span',
+								null,
+								'Gen&SiS'
+							)
+						)
+					),
+					React.createElement(
+						'li',
+						null,
+						React.createElement(
+							Link,
+							{ to: '/simulateurs' },
+							React.createElement(
+								'span',
+								null,
+								'Simulateurs'
+							)
+						)
+					),
+					React.createElement(
+						'li',
+						null,
+						React.createElement(
+							'a',
+							{ href: '#' },
+							'Statistiques'
+						)
+					),
+					React.createElement(
+						'li',
+						null,
+						React.createElement(
+							'a',
+							{ href: '#' },
+							'Aide'
+						)
+					)
+				)
 			),
+			React.createElement('a', { href: '#', id: 'menu-toggle', onClick: this.toggleMenu, className: 'glyphicon glyphicon-menu-hamburger' }),
 			React.createElement(
-				"td",
-				null,
-				this.props.api.name
-			),
-			React.createElement(
-				"td",
-				null,
-				this.props.api.uri
-			),
-			React.createElement(
-				"td",
-				null,
-				view
+				'div',
+				{ id: 'page-content-wrapper' },
+				this.props.children
 			)
 		);
 	}
 
+});
+
+module.exports = App;
+
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],2:[function(require,module,exports){
+(function (global){
+"use strict";
+
+var Reflux = (typeof window !== "undefined" ? window['Reflux'] : typeof global !== "undefined" ? global['Reflux'] : null);
+
+var Actions = Reflux.createActions([
+// SERVICES ACTIONS
+"updateServices", "selectService",
+
+// API ACTIONS
+"selectApi",
+
+// AGENT ACTIONS
+"selectAgent", "disableAgent", "refreshAgentList"]);
+
+module.exports = Actions;
+
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],3:[function(require,module,exports){
+(function (global){
+'use strict';
+
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+var Actions = require('../actions/Actions.js');
+
+var Agent = React.createClass({
+	displayName: 'Agent',
+	select: function select(event) {
+		if (!event.isDefaultPrevented()) {
+			Actions.selectAgent(this.props.agent.id);
+		}
+	},
+	remove: function remove(event) {
+		event.preventDefault();
+	},
+
+
+	render: function render() {
+		var agent = this.props.agent;
+
+		var changeStatus;
+		var ligneActive = "";
+		var selectable = "";
+
+		if (!agent.status) {
+			ligneActive = "active stopped";
+		} else if (this.props.selected) {
+			ligneActive += " line-selected";
+		} else {
+			selectable = this.select;
+		}
+
+		return React.createElement(
+			'tr',
+			{ className: ligneActive, onClick: selectable },
+			React.createElement(
+				'th',
+				{ scope: 'row' },
+				agent.id
+			),
+			React.createElement(
+				'td',
+				null,
+				agent.hostname
+			),
+			React.createElement(
+				'td',
+				null,
+				agent.port
+			),
+			React.createElement(
+				'td',
+				null,
+				React.createElement(
+					'a',
+					{ href: '#', onClick: this.remove, className: 'btn-remove pull-right' },
+					React.createElement('span', { className: 'glyphicon glyphicon-remove', 'aria-hidden': 'true' })
+				)
+			)
+		);
+	}
+});
+
+module.exports = Agent;
+
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"../actions/Actions.js":2}],4:[function(require,module,exports){
+(function (global){
+'use strict';
+
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+var Reflux = (typeof window !== "undefined" ? window['Reflux'] : typeof global !== "undefined" ? global['Reflux'] : null);
+var Actions = require('../actions/Actions.js');
+var AgentsStore = require('../stores/AgentsStore.js');
+var Agent = require('./Agent.jsx');
+var Panel = require('./Panel.jsx');
+
+var AgentsPanel = React.createClass({
+	displayName: 'AgentsPanel',
+
+	mixins: [Reflux.listenTo(AgentsStore, 'onStoreUpdate')],
+
+	getInitialState: function getInitialState() {
+		var data = AgentsStore.getDefaultData();
+		return { agents: data.agents, selected: data.selected };
+	},
+
+	onStoreUpdate: function onStoreUpdate(data) {
+		this.setState({ agents: data.agents, selected: data.selected });
+	},
+	addAgent: function addAgent() {},
+	refreshList: function refreshList() {
+		Actions.refreshAgentList();
+	},
+
+
+	render: function render() {
+		var agents = this.state.agents.map(function (agent, index, array) {
+			return React.createElement(Agent, { agent: agent, selected: agent.id == this.state.selected });
+		}, this);
+
+		var links = React.createElement(
+			'div',
+			{ className: 'pull-right' },
+			React.createElement(
+				'a',
+				{ href: '#', onClick: this.refreshList, className: 'btn-add', title: 'Actualiser la liste' },
+				React.createElement('span', { className: 'glyphicon glyphicon-refresh', 'aria-hidden': 'true' })
+			),
+			React.createElement(
+				'a',
+				{ href: '#', onClick: this.addAgent, className: 'btn-add', title: 'Ajouter un agent' },
+				React.createElement('span', { className: 'glyphicon glyphicon-plus', 'aria-hidden': 'true' })
+			)
+		);
+
+		return React.createElement(
+			Panel,
+			{ title: 'GeneSiS Agents', links: links },
+			React.createElement(
+				'table',
+				{ className: 'table table-condensed table-hover' },
+				React.createElement(
+					'tbody',
+					null,
+					agents
+				)
+			)
+		);
+	}
+});
+
+module.exports = AgentsPanel;
+
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"../actions/Actions.js":2,"../stores/AgentsStore.js":12,"./Agent.jsx":3,"./Panel.jsx":7}],5:[function(require,module,exports){
+(function (global){
+'use strict';
+
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+var Actions = require('../actions/Actions.js');
+
+var Api = React.createClass({
+	displayName: 'Api',
+	select: function select(event) {
+		if (!event.isDefaultPrevented()) {
+			Actions.selectApi(this.props.api.id);
+		}
+	},
+	remove: function remove(event) {
+		event.preventDefault();
+	},
+
+
+	render: function render() {
+		var api = this.props.api;
+
+		var ligneActive = "";
+		var selectable = this.select;
+
+		if (this.props.selected) {
+			ligneActive += " line-selected";
+		}
+
+		return React.createElement(
+			'tr',
+			{ className: ligneActive, onClick: selectable },
+			React.createElement(
+				'th',
+				{ scope: 'row' },
+				api.id
+			),
+			React.createElement(
+				'td',
+				null,
+				api.name
+			),
+			React.createElement(
+				'td',
+				null,
+				api.method,
+				' : ',
+				api.uri
+			),
+			React.createElement(
+				'td',
+				null,
+				React.createElement(
+					'a',
+					{ href: '#', onClick: this.remove, className: 'btn-remove pull-right' },
+					React.createElement('span', { className: 'glyphicon glyphicon-remove', 'aria-hidden': 'true' })
+				)
+			)
+		);
+	}
 });
 
 module.exports = Api;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],2:[function(require,module,exports){
+},{"../actions/Actions.js":2}],6:[function(require,module,exports){
 (function (global){
 'use strict';
 
 var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
-var Api = require('./api.jsx');
-var OperationList = require('./operationList.jsx');
+var Reflux = (typeof window !== "undefined" ? window['Reflux'] : typeof global !== "undefined" ? global['Reflux'] : null);
+var Actions = require('../actions/Actions.js');
+var ApisStore = require('../stores/ApisStore.js');
+var Api = require('./Api.jsx');
+var Panel = require('./Panel.jsx');
 
-var ApiList = React.createClass({
-	displayName: 'ApiList',
+var ApisPanel = React.createClass({
+	displayName: 'ApisPanel',
+
+	mixins: [Reflux.listenTo(ApisStore, 'onStoreUpdate')],
 
 	getInitialState: function getInitialState() {
-		return { selected: [] };
+		var data = ApisStore.getDefaultData();
+		return { apis: data.apis, selected: data.selected };
 	},
 
-	//componentDidMount: function() {
-	//this.setState({apis: this.props.apis, selected=this.props.apis[0]});
-	//},
-
-	handleonClick: function handleonClick(api) {
-		this.setState({ selected: api });
+	onStoreUpdate: function onStoreUpdate(data) {
+		this.setState({ apis: data.apis, selected: data.selected });
 	},
+
 
 	render: function render() {
-		var apis = this.props.apis.map(function (api, index, array) {
-			return React.createElement(Api, { index: index, api: api, onClick: this.handleonClick });
+		var apis = this.state.apis.map(function (api, index, array) {
+			return React.createElement(Api, { api: api, selected: index == this.state.selected });
 		}, this);
 
-		var operationList;
-		if (this.state.selected.operations != undefined) {
-			operationList = React.createElement(OperationList, { agent: this.props.agent, operations: this.state.selected.operations, uri: this.state.selected.uri });
-		}
+		var links = React.createElement(
+			'a',
+			{ href: '#', onClick: this.addApi, className: 'pull-right btn-add', title: 'Ajouter une API / Opération' },
+			React.createElement('span', { className: 'glyphicon glyphicon-plus', 'aria-hidden': 'true' })
+		);
 
 		return React.createElement(
-			'div',
-			{ className: 'gs-bg-class' },
-			React.createElement(
-				'p',
-				{ className: 'bg-primary' },
-				'Service ',
-				React.createElement(
-					'b',
-					null,
-					this.props.basepath
-				),
-				React.createElement(
-					'a',
-					{ className: 'btn btn-default btn-xs pull-right', role: 'button', href: '#' },
-					React.createElement('span', { className: 'glyphicon glyphicon-plus', 'aria-hidden': 'true' }),
-					' Add'
-				)
-			),
+			Panel,
+			{ title: 'Apis / Opérations', links: links },
 			React.createElement(
 				'table',
-				{ className: 'table table-hover' },
-				React.createElement(
-					'thead',
-					null,
-					React.createElement(
-						'tr',
-						null,
-						React.createElement(
-							'th',
-							null,
-							'Id'
-						),
-						React.createElement(
-							'th',
-							null,
-							'Name'
-						),
-						React.createElement(
-							'th',
-							null,
-							'URI'
-						),
-						React.createElement(
-							'th',
-							null,
-							'Actions'
-						)
-					)
-				),
+				{ className: 'table table-condensed table-hover' },
 				React.createElement(
 					'tbody',
 					null,
 					apis
-				)
-			),
-			operationList
-		);
-	}
-});
-
-module.exports = ApiList;
-
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./api.jsx":1,"./operationList.jsx":5}],3:[function(require,module,exports){
-(function (global){
-'use strict';
-
-var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null),
-    ServiceList = require('./serviceList.jsx');
-
-var AgentControl = React.createClass({
-	displayName: 'AgentControl',
-
-
-	render: function render() {
-		return React.createElement(ServiceList, { agent: this.props.agent });
-	}
-
-});
-
-ReactDOM.render(React.createElement(AgentControl, { agent: 'localhost:9080' }), document.getElementById('page-content-wrapper'));
-
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./serviceList.jsx":7}],4:[function(require,module,exports){
-(function (global){
-'use strict';
-
-var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
-
-var Operation = React.createClass({
-	displayName: 'Operation',
-
-	getInitialState: function getInitialState() {
-		return { data: [] };
-	},
-
-	componentDidMount: function componentDidMount() {},
-
-	render: function render() {
-
-		var tp = '';
-		this.props.operation.transferProperties.map(function (tprop, index, array) {
-			if (index > 0) tp += ', ';
-			tp += '' + tprop.name;
-		});
-
-		return React.createElement(
-			'tr',
-			null,
-			React.createElement(
-				'th',
-				{ scope: 'row' },
-				this.props.index
-			),
-			React.createElement(
-				'td',
-				null,
-				this.props.operation.method
-			),
-			React.createElement('td', null),
-			React.createElement(
-				'td',
-				null,
-				tp
-			),
-			React.createElement('td', null),
-			React.createElement('td', null)
-		);
-	}
-
-});
-
-module.exports = Operation;
-
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],5:[function(require,module,exports){
-(function (global){
-'use strict';
-
-var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
-var Operation = require('./operation.jsx');
-
-var OperationList = React.createClass({
-	displayName: 'OperationList',
-
-	getInitialState: function getInitialState() {
-		return { selected: [] };
-	},
-
-	//componentDidMount: function() {
-	//this.setState({apis: this.props.apis, selected=this.props.apis[0]});
-	//},
-
-	render: function render() {
-		var operations = this.props.operations.map(function (operation, index, array) {
-			return React.createElement(Operation, { index: index, operation: operation });
-		});
-
-		return React.createElement(
-			'div',
-			{ className: 'gs-bg-class' },
-			React.createElement(
-				'p',
-				{ className: 'bg-primary' },
-				React.createElement(
-					'b',
-					null,
-					this.props.uri
-				),
-				React.createElement(
-					'a',
-					{ className: 'btn btn-default btn-xs pull-right', role: 'button', href: '#' },
-					React.createElement('span', { className: 'glyphicon glyphicon-plus', 'aria-hidden': 'true' }),
-					' Add'
-				)
-			),
-			React.createElement(
-				'table',
-				{ className: 'table table-hover' },
-				React.createElement(
-					'thead',
-					null,
-					React.createElement(
-						'tr',
-						null,
-						React.createElement(
-							'th',
-							null,
-							'Id'
-						),
-						React.createElement(
-							'th',
-							null,
-							'method'
-						),
-						React.createElement(
-							'th',
-							null,
-							'keys'
-						),
-						React.createElement(
-							'th',
-							null,
-							'transferproperties'
-						),
-						React.createElement(
-							'th',
-							null,
-							'parameters'
-						),
-						React.createElement(
-							'th',
-							null,
-							'Actions'
-						)
-					)
-				),
-				React.createElement(
-					'tbody',
-					null,
-					operations
 				)
 			)
 		);
 	}
 });
 
-module.exports = OperationList;
+module.exports = ApisPanel;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./operation.jsx":4}],6:[function(require,module,exports){
+},{"../actions/Actions.js":2,"../stores/ApisStore.js":13,"./Api.jsx":5,"./Panel.jsx":7}],7:[function(require,module,exports){
 (function (global){
 'use strict';
 
 var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+var PropTypes = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null).PropTypes;
+
+var Panel = React.createClass({
+	displayName: 'Panel',
+
+
+	propTypes: {
+		children: PropTypes.object
+	},
+
+	render: function render() {
+
+		return React.createElement(
+			'div',
+			{ className: 'panel panel-default' },
+			React.createElement(
+				'div',
+				{ className: 'panel-heading' },
+				this.props.title,
+				this.props.links
+			),
+			React.createElement(
+				'div',
+				{ className: 'panel-body' },
+				this.props.children
+			)
+		);
+	}
+});
+
+module.exports = Panel;
+
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],8:[function(require,module,exports){
+(function (global){
+'use strict';
+
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+var Actions = require('../actions/Actions.js');
 
 var Service = React.createClass({
 	displayName: 'Service',
-
-	getInitialState: function getInitialState() {
-		return { data: [] };
-	},
-
-	stop: function stop() {
-		$.ajax({
-			url: 'http://' + this.props.agent + '/stop/' + this.state.data.basepath,
-			dataType: 'json',
-			cache: false,
-			success: function (data) {
-				this.setState({ data: data });
-			}.bind(this),
-			error: function (xhr, status, err) {
-				console.error('http://' + this.props.agent + '/stop/' + this.state.data.basepath, status, err.toString());
-			}.bind(this)
-		});
-	},
-	start: function start() {
-		$.ajax({
-			url: 'http://' + this.props.agent + '/start/' + this.state.data.basepath,
-			dataType: 'json',
-			cache: false,
-			success: function (data) {
-				this.setState({ data: data });
-			}.bind(this),
-			error: function (xhr, status, err) {
-				console.error('http://' + this.props.agent + '/start/' + this.state.data.basepath, status, err.toString());
-			}.bind(this)
-		});
-	},
-	remove: function remove() {
-		if (confirm('Etes vous certains de vouloir supprimer le service?')) {}
-	},
-	componentDidMount: function componentDidMount() {
-		$.ajax({
-			url: 'http://' + this.props.agent + '/' + this.props.name,
-			dataType: 'json',
-			cache: false,
-			success: function (data) {
-				console.log(data);
-				this.setState({ data: data });
-			}.bind(this),
-			error: function (xhr, status, err) {
-				console.error('http://' + this.props.agent + '/' + this.props.name, status, err.toString());
-			}.bind(this)
-		});
-	},
-	show: function show() {
-		if (this.props.onClick) {
-			this.props.onClick(this.state.data);
+	select: function select(event) {
+		if (!event.isDefaultPrevented()) {
+			Actions.selectService(this.props.service.id);
 		}
 	},
+	remove: function remove(event) {
+		event.preventDefault();
+	},
+
+
 	render: function render() {
-		var changeStatus;
-		if (this.state.data.state == 'running') {
-			changeStatus = React.createElement(
-				'a',
-				{ className: 'btn btn-warning btn-xs', href: '#', role: 'button', onClick: this.stop },
-				React.createElement('span', { className: 'glyphicon glyphicon-stop', 'aria-hidden': 'true' }),
-				' Stop'
-			);
-		} else {
-			changeStatus = React.createElement(
-				'a',
-				{ className: 'btn btn-success btn-xs', href: '#', role: 'button', onClick: this.start },
-				React.createElement('span', { className: 'glyphicon glyphicon-play', 'aria-hidden': 'true' }),
-				' Start'
-			);
-		}
-		var del = React.createElement(
-			'a',
-			{ className: 'btn btn-danger btn-xs pull-right', href: '#', role: 'button', onClick: this.remove },
-			React.createElement('span', { className: 'glyphicon glyphicon-trash', 'aria-hidden': 'true' }),
-			' Delete'
-		);
+		var service = this.props.service;
 
-		var view = React.createElement(
-			'a',
-			{ className: 'btn btn-default btn-xs', href: '#', role: 'button', onClick: this.show },
-			React.createElement('span', { className: 'glyphicon glyphicon-eye-open', 'aria-hidden': 'true' }),
-			' View'
-		);
+		var changeStatus;
+		var ligneActive = "";
+		var selectable = this.select;
+
+		if (!service.status) {
+			ligneActive = "active stopped";
+		}
+		if (this.props.selected) {
+			ligneActive += " line-selected";
+			selectable = "";
+		}
 
 		return React.createElement(
 			'tr',
-			null,
+			{ className: ligneActive, onClick: selectable },
 			React.createElement(
 				'th',
 				{ scope: 'row' },
-				this.props.index
+				service.id
 			),
 			React.createElement(
 				'td',
 				null,
-				this.state.data.basepath
+				service.basepath
 			),
 			React.createElement(
 				'td',
 				null,
-				this.state.data.state
-			),
-			React.createElement(
-				'td',
-				null,
-				view,
-				' ',
-				changeStatus,
-				' ',
-				del
+				React.createElement(
+					'a',
+					{ href: '#', onClick: this.remove, className: 'btn-remove pull-right' },
+					React.createElement('span', { className: 'glyphicon glyphicon-remove', 'aria-hidden': 'true' })
+				)
 			)
 		);
 	}
@@ -455,110 +481,416 @@ module.exports = Service;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],7:[function(require,module,exports){
+},{"../actions/Actions.js":2}],9:[function(require,module,exports){
 (function (global){
 'use strict';
 
 var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
-var Service = require('./service.jsx');
-var ApiList = require('./apiList.jsx');
+var Reflux = (typeof window !== "undefined" ? window['Reflux'] : typeof global !== "undefined" ? global['Reflux'] : null);
+var Actions = require('../actions/Actions.js');
+var ServicesStore = require('../stores/ServicesStore.js');
+var Service = require('./Service.jsx');
+var Panel = require('./Panel.jsx');
 
-var ServiceList = React.createClass({
-	displayName: 'ServiceList',
+var ServicesPanel = React.createClass({
+	displayName: 'ServicesPanel',
+
+	mixins: [Reflux.listenTo(ServicesStore, 'onStoreUpdate')],
 
 	getInitialState: function getInitialState() {
-		return { services: [], selected: [] };
+		var data = ServicesStore.getDefaultData();
+		return { services: data.services, selected: data.selected };
 	},
 
-	componentDidMount: function componentDidMount() {
-		$.ajax({
-			url: 'http://' + this.props.agent + '/list',
-			dataType: 'json',
-			cache: false,
-			success: function (data) {
-				this.setState({ services: data, selected: [] });
-			}.bind(this),
-			error: function (xhr, status, err) {
-				//console.error(`http://${this.props.agent}/list`, status, err.toString());
-			}.bind(this)
-		});
+	onStoreUpdate: function onStoreUpdate(data) {
+		this.setState({ services: data.services, selected: data.selected });
 	},
 
-	handleonClick: function handleonClick(service) {
-		this.setState({ services: this.state.services, selected: service });
-	},
 
 	render: function render() {
 		var services = this.state.services.map(function (service, index, array) {
-			return React.createElement(Service, { agent: this.props.agent, name: service, index: index, onClick: this.handleonClick });
+			return React.createElement(Service, { service: service, selected: index == this.state.selected });
 		}, this);
 
-		var apiList;
-		if (this.state.selected.apis != undefined) {
-			apiList = React.createElement(ApiList, { agent: this.props.agent, apis: this.state.selected.apis, basepath: this.state.selected.basepath });
-		}
+		var links = React.createElement(
+			'a',
+			{ href: '#', onClick: this.addService, className: 'pull-right btn-add', title: 'Ajouter un service' },
+			React.createElement('span', { className: 'glyphicon glyphicon-plus', 'aria-hidden': 'true' })
+		);
 
 		return React.createElement(
-			'div',
-			{ className: 'gs-bg-class' },
-			React.createElement(
-				'p',
-				{ className: 'bg-primary' },
-				'Liste des services - http://',
-				this.props.agent,
-				' ',
-				React.createElement(
-					'a',
-					{ className: 'btn btn-default btn-xs pull-right', role: 'button', href: '#' },
-					React.createElement('span', { className: 'glyphicon glyphicon-plus', 'aria-hidden': 'true' }),
-					' Add'
-				)
-			),
+			Panel,
+			{ title: 'Services', links: links },
 			React.createElement(
 				'table',
-				{ className: 'table table-hover' },
-				React.createElement(
-					'thead',
-					null,
-					React.createElement(
-						'tr',
-						null,
-						React.createElement(
-							'th',
-							null,
-							'Id'
-						),
-						React.createElement(
-							'th',
-							null,
-							'Service'
-						),
-						React.createElement(
-							'th',
-							null,
-							'Status'
-						),
-						React.createElement(
-							'th',
-							null,
-							'Actions'
-						)
-					)
-				),
+				{ className: 'table table-condensed table-hover' },
 				React.createElement(
 					'tbody',
 					null,
 					services
 				)
+			)
+		);
+	}
+});
+
+module.exports = ServicesPanel;
+
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"../actions/Actions.js":2,"../stores/ServicesStore.js":14,"./Panel.jsx":7,"./Service.jsx":8}],10:[function(require,module,exports){
+(function (global){
+'use strict';
+
+var ReactDOM = (typeof window !== "undefined" ? window['ReactDOM'] : typeof global !== "undefined" ? global['ReactDOM'] : null);
+var routes = require('./routes.jsx');
+
+ReactDOM.render(routes, document.getElementById('app'));
+
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./routes.jsx":11}],11:[function(require,module,exports){
+(function (global){
+'use strict';
+
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+var Router = (typeof window !== "undefined" ? window['ReactRouter'] : typeof global !== "undefined" ? global['ReactRouter'] : null).Router;
+var Route = (typeof window !== "undefined" ? window['ReactRouter'] : typeof global !== "undefined" ? global['ReactRouter'] : null).Route;
+var Redirect = (typeof window !== "undefined" ? window['ReactRouter'] : typeof global !== "undefined" ? global['ReactRouter'] : null).Redirect;
+
+var App = require('./App.jsx');
+var AdminSimulateurs = require('./views/AdminSimulateurs.jsx');
+
+module.exports = React.createElement(
+    Router,
+    null,
+    React.createElement(
+        Route,
+        { component: App },
+        React.createElement(Route, { name: 'simulateurs', path: '/simulateurs', component: AdminSimulateurs }),
+        React.createElement(Redirect, { from: '/', to: '/simulateurs' })
+    )
+);
+
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./App.jsx":1,"./views/AdminSimulateurs.jsx":15}],12:[function(require,module,exports){
+(function (global){
+'use strict';
+
+var Reflux = (typeof window !== "undefined" ? window['Reflux'] : typeof global !== "undefined" ? global['Reflux'] : null);
+var Actions = require('../actions/Actions.js');
+
+var data = {
+	agents: [{ "id": 0, "hostname": "localhost", "port": "9080", "status": 1 }, { "id": 1, "hostname": "localhost", "port": "9081", "status": 0 }, { "id": 2, "hostname": "10.44.208.85", "port": "9080", "status": 1 }, { "id": 3, "hostname": "10.44.208.85", "port": "9081", "status": 1 }, { "id": 4, "hostname": "10.44.208.85", "port": "9081", "status": 1 }],
+	selected: -1,
+	currentPage: 1
+};
+
+var AgentsStore = Reflux.createStore({
+	listenables: Actions,
+
+	onSelectAgent: function onSelectAgent(id) {
+		data.selected = id;
+		this.trigger(data);
+	},
+
+	onRefreshAgentList: function onRefreshAgentList() {
+		data.selected = -1;
+		for (var index in data.agents) {
+			if (data.agents[index].status === 1) {
+				data.selected = index;
+				break;
+			}
+		}
+		this.trigger(data);
+	},
+
+	onDisableAgent: function onDisableAgent(id) {
+		data.agents[id].status = 0;
+		this.onRefreshAgentList();
+	},
+
+	getDefaultData: function getDefaultData() {
+		this.onRefreshAgentList();
+		return data;
+	}
+});
+
+module.exports = AgentsStore;
+
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"../actions/Actions.js":2}],13:[function(require,module,exports){
+(function (global){
+'use strict';
+
+var Reflux = (typeof window !== "undefined" ? window['Reflux'] : typeof global !== "undefined" ? global['Reflux'] : null);
+var Actions = require('../actions/Actions.js');
+var ServicesStore = require('./ServicesStore.js');
+
+var data = {
+	apis: [],
+	selected: -1,
+	currentPage: 1
+};
+
+var ApisStore = Reflux.createStore({
+
+	init: function init() {
+		this.listenToMany(Actions);
+		this.listenTo(ServicesStore, this.onServicesStoreChange);
+	},
+
+	onServicesStoreChange: function onServicesStoreChange(storeData) {
+		if (storeData.selected === -1) {
+			return;
+		}
+		var services = storeData.services;
+		var service = services[storeData.selected];
+
+		data.apis = [];
+		data.selected = -1;
+
+		for (var idApi in service.apis) {
+			var api = service.apis[idApi];
+
+			for (var idOperation in api.operations) {
+				var operation = api.operations[idOperation];
+
+				operation.name = api.name;
+				operation.uri = api.uri, operation.id = data.apis.length;
+
+				data.apis.push(operation);
+			}
+		}
+		data.selected = 0;
+
+		this.trigger(data);
+	},
+
+	onSelectApi: function onSelectApi(id) {
+		data.selected = id;
+		this.trigger(data);
+	},
+
+	getDefaultData: function getDefaultData() {
+		return data;
+	}
+});
+
+module.exports = ApisStore;
+
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"../actions/Actions.js":2,"./ServicesStore.js":14}],14:[function(require,module,exports){
+(function (global){
+'use strict';
+
+var Reflux = (typeof window !== "undefined" ? window['Reflux'] : typeof global !== "undefined" ? global['Reflux'] : null);
+var Actions = require('../actions/Actions.js');
+var AgentsStore = require('./AgentsStore.js');
+
+var data = {
+	services: [],
+	selected: 0,
+	currentPage: 1
+};
+
+var ServicesStore = Reflux.createStore({
+
+	init: function init() {
+		this.listenToMany(Actions);
+		this.listenTo(AgentsStore, this.onAgentsStoreChange);
+	},
+
+	onAgentsStoreChange: function onAgentsStoreChange(storeData) {
+		var _this = this;
+
+		if (storeData.selected === -1) {
+			return;
+		}
+		var agents = storeData.agents;
+		var agent = agents[storeData.selected];
+
+		//si le statut de l'agent est arrêté, on ne tente pas l'appel pour afficher les services
+		if (!agent.status) {
+			return;
+		}
+
+		data.services = [];
+		data.selected = -1;
+		var count = 0;
+		$.ajax({
+			url: 'http://' + agent.hostname + ':' + agent.port + '/list',
+			type: "GET",
+			dataType: "json",
+			success: function success(result) {
+				result.forEach(function (res, index, array) {
+					$.ajax({
+						url: 'http://' + agent.hostname + ':' + agent.port + '/' + res,
+						type: "GET",
+						dataType: "json",
+						success: function success(srv) {
+							srv.id = count++;
+							if (srv.state == 'running') {
+								srv.status = 1;
+								if (data.selected == -1) data.selected = srv.id;
+							} else {
+								srv.status = 0;
+							}
+							data.services.push(srv);
+							if (srv.id == array.length - 1) {
+								_this.trigger(data);
+							}
+						}
+					});
+				});
+			},
+			error: function error(x, t, m) {
+				Actions.disableAgent(agent.id);
+			}
+		});
+	},
+
+	onSelectService: function onSelectService(id) {
+		data.selected = id;
+		this.trigger(data);
+	},
+
+	getDefaultData: function getDefaultData() {
+		return data;
+	}
+});
+
+module.exports = ServicesStore;
+
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"../actions/Actions.js":2,"./AgentsStore.js":12}],15:[function(require,module,exports){
+(function (global){
+'use strict';
+
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+var AgentsPanel = require('../components/AgentsPanel.jsx');
+var ServicesPanel = require('../components/ServicesPanel.jsx');
+var ApisPanel = require('../components/ApisPanel.jsx');
+
+var AdminSimulateurs = React.createClass({
+	displayName: 'AdminSimulateurs',
+	componentDidMount: function componentDidMount() {
+		$.ajaxSetup({ timeout: 1000 });
+	},
+
+
+	render: function render() {
+		return React.createElement(
+			'div',
+			{ id: 'grid' },
+			React.createElement(
+				'div',
+				{ className: 'row' },
+				React.createElement(
+					'div',
+					{ className: 'col-lg-3' },
+					React.createElement(AgentsPanel, null)
+				),
+				React.createElement(
+					'div',
+					{ className: 'col-lg-5' },
+					React.createElement(ServicesPanel, null)
+				),
+				React.createElement(
+					'div',
+					{ className: 'col-lg-4' },
+					React.createElement(ApisPanel, null)
+				)
 			),
-			apiList
+			React.createElement(
+				'div',
+				{ className: 'row' },
+				React.createElement(
+					'div',
+					{ className: 'col-lg-3' },
+					React.createElement(
+						'div',
+						{ className: 'panel panel-default' },
+						React.createElement(
+							'div',
+							{ className: 'panel-heading' },
+							'Propriétés'
+						),
+						React.createElement('div', { className: 'panel-body' })
+					)
+				),
+				React.createElement(
+					'div',
+					{ className: 'col-lg-5' },
+					React.createElement(
+						'div',
+						{ className: 'panel panel-default' },
+						React.createElement(
+							'div',
+							{ className: 'panel-heading' },
+							'Transfert Properties'
+						),
+						React.createElement('div', { className: 'panel-body' })
+					)
+				),
+				React.createElement(
+					'div',
+					{ className: 'col-lg-4' },
+					React.createElement(
+						'div',
+						{ className: 'panel panel-default' },
+						React.createElement(
+							'div',
+							{ className: 'panel-heading' },
+							'Paramètres'
+						),
+						React.createElement('div', { className: 'panel-body' })
+					)
+				)
+			),
+			React.createElement(
+				'div',
+				{ className: 'row' },
+				React.createElement(
+					'div',
+					{ className: 'col-lg-6' },
+					React.createElement(
+						'div',
+						{ className: 'panel panel-default' },
+						React.createElement(
+							'div',
+							{ className: 'panel-heading' },
+							'Templates'
+						),
+						React.createElement('div', { className: 'panel-body' })
+					)
+				),
+				React.createElement(
+					'div',
+					{ className: 'col-lg-6' },
+					React.createElement(
+						'div',
+						{ className: 'panel panel-default' },
+						React.createElement(
+							'div',
+							{ className: 'panel-heading' },
+							'DataSets'
+						),
+						React.createElement('div', { className: 'panel-body' })
+					)
+				)
+			)
 		);
 	}
 
 });
 
-module.exports = ServiceList;
+module.exports = AdminSimulateurs;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./apiList.jsx":2,"./service.jsx":6}]},{},[3]);
+},{"../components/AgentsPanel.jsx":4,"../components/ApisPanel.jsx":6,"../components/ServicesPanel.jsx":9}]},{},[10]);

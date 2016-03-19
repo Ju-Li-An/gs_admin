@@ -1,11 +1,11 @@
 var React = require('react');
 var Actions = require('../actions/Actions.js');
 
-var Service = React.createClass({
+var Agent = React.createClass({
 	
 	select(event){
 		if(!event.isDefaultPrevented()){
-			Actions.selectService(this.props.service.id);
+			Actions.selectAgent(this.props.agent.id);
 		}
 	},
 	
@@ -14,25 +14,25 @@ var Service = React.createClass({
 	},
 	
 	render: function() {
-		const service=this.props.service;
+		const agent=this.props.agent;
 		
 		var changeStatus;
 		var ligneActive="";
-		var selectable=this.select;
+		var selectable="";
 		
-		if(!service.status){
+		if(!agent.status){
 			ligneActive="active stopped";
-		}
-		if(this.props.selected){
+		}else if(this.props.selected){
 			ligneActive+=" line-selected";
-			selectable="";
+		}else{
+			selectable=this.select;
 		}
-		
-		
+
 		return (
 				<tr className={ligneActive} onClick={selectable}> 
-					<th scope="row">{service.id}</th> 
-					<td>{service.basepath}</td> 
+					<th scope="row">{agent.id}</th> 
+					<td>{agent.hostname}</td> 
+					<td>{agent.port}</td> 
 					<td>
 						<a href="#" onClick={this.remove} className="btn-remove pull-right"><span className="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
 					</td> 
@@ -41,4 +41,4 @@ var Service = React.createClass({
     }
 });
 
-module.exports = Service;
+module.exports = Agent;

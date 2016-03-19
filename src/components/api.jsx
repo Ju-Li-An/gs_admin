@@ -1,34 +1,39 @@
 var React = require('react');
+var Actions = require('../actions/Actions.js');
 
 var Api = React.createClass({
-	getInitialState: function() {
-			return {data: []};
-	},
 	
-	componentDidMount: function() {
-		
-	},
-	
-	select: function(){
-		if(this.props.onClick){
-			this.props.onClick(this.props.api);
+	select(event){
+		if(!event.isDefaultPrevented()){
+			Actions.selectApi(this.props.api.id);
 		}
 	},
 	
+	remove(event){
+		event.preventDefault();
+	},
+	
 	render: function() {
-	
-		 var view = <a className="btn btn-default btn-xs" href="#" role="button" onClick={this.select}><span className="glyphicon glyphicon-eye-open" aria-hidden="true"></span> View</a>;
-		 
+		const api=this.props.api;
+		
+		var ligneActive="";
+		var selectable=this.select;
+		
+		if(this.props.selected){
+			ligneActive+=" line-selected";
+		}
+		
 		return (
-			<tr> 
-				<th scope="row">{this.props.index}</th>
-				<td>{this.props.api.name}</td>
-				<td>{this.props.api.uri}</td>
-				<td>{view}</td>
-			</tr>
-		);
-	}
-	
+				<tr className={ligneActive} onClick={selectable}> 
+					<th scope="row">{api.id}</th> 
+					<td>{api.name}</td> 
+					<td>{api.method} : {api.uri}</td> 
+					<td>
+						<a href="#" onClick={this.remove} className="btn-remove pull-right"><span className="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+					</td> 
+				</tr>
+			 );
+    }
 });
 
-module.exports=Api;
+module.exports = Api;

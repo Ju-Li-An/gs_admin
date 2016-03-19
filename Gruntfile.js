@@ -6,10 +6,10 @@ module.exports = function(grunt) {
                 debug: true,
                 extensions: ['.jsx'],
 				transform: [['babelify', {presets: ['es2015', 'react']}]],
-				external: ['react']
+				external: ['react','reflux','react-router','react-dom']
             },
             gs_admin: {
-                src: 'src/components/app.jsx',
+                src: 'src/render.js',
                 dest: 'public/javascripts/app.js'
             }
         }
