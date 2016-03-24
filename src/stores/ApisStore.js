@@ -3,7 +3,9 @@ var Actions= require('../actions/Actions.js');
 var ServicesStore = require('./ServicesStore.js');
 
 let data = {
+	currentService:'',
 	apis:[],
+	agent:{},
 	selected:-1,
 	currentPage:1,
 };
@@ -15,38 +17,35 @@ var ApisStore = Reflux.createStore({
         this.listenTo(ServicesStore, this.onServicesStoreChange);
     },
 	
-	
 	onServicesStoreChange:function (storeData){
 		if(storeData.selected===-1){
 			return;
 		}
-		var services = storeData.services;
-		var service = services[storeData.selected];
-		
+		var service = storeData.selected;
+		data.agent=storeData.agent;
+		data.currentService =  service.basepath;
+
 		data.apis=[];
 		data.selected=-1;
 		
-		for(var idApi in service.apis){
-			var api = service.apis[idApi];
-			
-			for(var idOperation in api.operations){
-				var operation = api.operations[idOperation];
-				
+		service.apis.map((api) => {
+			api.operations.map((operation) => {
 				operation.name=api.name;
 				operation.uri=api.uri,
 				operation.id=data.apis.length;
-	
 				data.apis.push(operation);
-			}
-		}
-		data.selected=0;
+			});
+		});
+		
+
+		if(data.apis.length > 0)
+			data.selected=data.apis[0];
 		
 		this.trigger(data);
-
 	},
 	
-	onSelectApi:function(id){
-		data.selected=id;
+	onSelectApi:function(api){
+		data.selected=api;
 		this.trigger(data);
 	},
 	

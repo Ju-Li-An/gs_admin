@@ -23,7 +23,7 @@ var ServicesPanel = React.createClass({
 	render: function() {
 		var services = this.state.services.map(function(service,index,array) {
 			return (
-				<Service service={service} selected={index==this.state.selected}/>
+				<Service service={service} selected={service.basepath===this.state.selected.basepath}/>
 			);
 		},this);
 		

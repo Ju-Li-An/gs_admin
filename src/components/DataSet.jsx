@@ -1,11 +1,11 @@
 var React = require('react');
 var Actions = require('../actions/Actions.js');
 
-var Api = React.createClass({
+var DataSet = React.createClass({
 	
 	select(event){
 		if(!event.isDefaultPrevented()){
-			Actions.selectApi(this.props.api);
+			Actions.selectDataset(this.props.dataset);
 		}
 	},
 	
@@ -14,7 +14,7 @@ var Api = React.createClass({
 	},
 	
 	render: function() {
-		const api=this.props.api;
+		const dataset=this.props.dataset;
 		
 		var ligneActive="";
 		var selectable=this.select;
@@ -25,8 +25,7 @@ var Api = React.createClass({
 		
 		return (
 				<tr className={ligneActive} onClick={selectable}> 
-					<th scope="row">{api.name}</th> 
-					<td>{api.method} : {api.uri}</td> 
+					<th scope="row">{dataset.value}</th> 
 					<td>
 						<a href="#" onClick={this.remove} className="btn-remove pull-right"><span className="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
 					</td> 
@@ -35,4 +34,4 @@ var Api = React.createClass({
     }
 });
 
-module.exports = Api;
+module.exports = DataSet;

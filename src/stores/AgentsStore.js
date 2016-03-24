@@ -14,8 +14,8 @@ let data = {
 var AgentsStore = Reflux.createStore({
 	listenables: Actions,
 	
-	onSelectAgent: function(id){
-		data.selected=id;
+	onSelectAgent: function(agent){
+		data.selected=agent;
 		this.trigger(data);
 	},
 	
@@ -24,15 +24,15 @@ var AgentsStore = Reflux.createStore({
 		data.selected=-1;
 		for(var index in data.agents){
 			if(data.agents[index].status===1){
-				data.selected=index;
+				data.selected=data.agents[index];
 				break;
 			}
 		}
 		this.trigger(data);
 	},
 	
-	onDisableAgent: function(id){
-		data.agents[id].status=0;
+	onDisableAgent: function(agent){
+		data.agents[agent.id].status=0;
 		this.onRefreshAgentList();
 	},
 	

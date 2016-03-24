@@ -5,7 +5,7 @@ var Service = React.createClass({
 	
 	select(event){
 		if(!event.isDefaultPrevented()){
-			Actions.selectService(this.props.service.id);
+			Actions.selectService(this.props.service);
 		}
 	},
 	
@@ -31,8 +31,7 @@ var Service = React.createClass({
 		
 		return (
 				<tr className={ligneActive} onClick={selectable}> 
-					<th scope="row">{service.id}</th> 
-					<td>{service.basepath}</td> 
+					<th scope="row">{service.basepath}</th> 
 					<td>
 						<a href="#" onClick={this.remove} className="btn-remove pull-right"><span className="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
 					</td> 

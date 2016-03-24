@@ -8,6 +8,13 @@ var Actions = Reflux.createActions([
 	// API ACTIONS
 	"selectApi",
 	
+	// TP ACTIONS
+	"selectTp",
+	
+	// Datasets ACTIONS
+	"selectDataset",
+	"refreshDatasetsList",
+	
 	// AGENT ACTIONS
 	"selectAgent",
 	"disableAgent",

@@ -2,43 +2,52 @@ var React = require('react');
 var Reflux = require('reflux');
 var Actions = require('../actions/Actions.js');
 var ApisStore = require('../stores/ApisStore.js');
-var Api = require('./Api.jsx');
+var TP = require('./TP.jsx');
 var Panel = require('./Panel.jsx');
 
-var ApisPanel = React.createClass({
+var TPsPanel = React.createClass({
 	mixins: [
 			Reflux.listenTo(ApisStore, 'onStoreUpdate')
 	],
 	
 	getInitialState: function() {
 		var data = ApisStore.getDefaultData();
-		return {apis: data.apis, selected: data.selected};
+		return {tps: [],keys:[]};
 	},
 	
 	onStoreUpdate(data){
-		this.setState({apis: data.apis,selected:data.selected});
+		this.setState({tps: data.selected.transferProperties,keys:data.selected.keys});
+	},
+	
+	addTp:function(){
+	
 	},
 
-
 	render: function() {
-		var apis = this.state.apis.map(function(api,index,array) {
+		var tps = this.state.tps.map(function(tp,index,array) {
+			var tpKey=0;
+			for(var idKey in this.state.keys){
+				if(this.state.keys[idKey].name == tp.name){
+					tpKey=1;
+					break;
+				}
+			}
 			return (
-				<Api api={api} selected={api.name==this.state.selected.name}/>
+				<TP tp={tp} isKey={tpKey}/>
 			);
 		},this);
-		
+	
 		var links=(
-			<a href="#" onClick={this.addApi} className="pull-right btn-add" title="Ajouter une API / Opération">
+			<a href="#" onClick={this.addTp} className="pull-right btn-add" title="Ajouter une Transfert Property">
 				<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
 			</a>
 		);
 		
-		
 		return (
-			<Panel title="Apis / Opérations" links={links}>
+			<Panel title="Transfert(s)" links={links}>
 				<table className="table table-condensed table-hover">
 					<tbody>
-						{apis}
+						{tps}
 					</tbody>
 				</table>
 			</Panel>
@@ -46,4 +55,4 @@ var ApisPanel = React.createClass({
     }
 });
 
-module.exports = ApisPanel;
+module.exports = TPsPanel;

@@ -29,7 +29,7 @@ var AgentsPanel = React.createClass({
 	render: function() {
 		var agents = this.state.agents.map(function(agent,index,array) {
 			return (
-				<Agent agent={agent} selected={agent.id==this.state.selected}/>
+				<Agent agent={agent} selected={agent.id==this.state.selected.id}/>
 			);
 		},this);
 		

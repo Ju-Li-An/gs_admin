@@ -4,7 +4,8 @@ var AgentsStore = require('./AgentsStore.js');
 
 let data = {
 	services:[],
-	selected:0,
+	agent:{},
+	selected:-1,
 	currentPage:1,
 };
 
@@ -15,58 +16,74 @@ var ServicesStore = Reflux.createStore({
         this.listenTo(AgentsStore, this.onAgentsStoreChange);
     },
 	
-	
+	//En cas de changement sur les données des agents
 	onAgentsStoreChange:function (storeData){
 		if(storeData.selected===-1){
 			return;
 		}
-		var agents = storeData.agents;
-		var agent = agents[storeData.selected];
+		data.agent = storeData.selected;
 		
 		//si le statut de l'agent est arrêté, on ne tente pas l'appel pour afficher les services
-		if(!agent.status){
+		if(!data.agent.status){
 			return;
 		}
 		
+		// Rafrachissement de la liste des services après changement de l'agent
+		this.onRefreshServiceList();
+		
+	},
+	
+	onRefreshServiceList:function(){
 		data.services=[];
 		data.selected=-1;
 		var count=0;
+		
+		var agentUrl='http://'+data.agent.hostname+':'+data.agent.port+'/';
+
+		// Récupération de la liste des Services
 		$.ajax({
-			url: 'http://'+agent.hostname+':'+agent.port+'/list',
+			url: agentUrl+'list',
 			type: "GET",
 			dataType: "json",
+			context: data.agent,
 			success: (result) => {
+			
+				// Pour chaque servie, récupération de sa configuration
 				result.forEach((res,index,array) => {
 					$.ajax({
-						url: 'http://'+agent.hostname+':'+agent.port+'/'+res,
+						url: agentUrl+res,
 						type: "GET",
 						dataType: "json",
 						success: (srv) => {
-							srv.id=count++;
+							var id =count++;
 							if(srv.state=='running'){
 								srv.status=1;
 								if(data.selected==-1)
-									data.selected=srv.id;
+									data.selected=srv;
 							}
 							else{
 								srv.status=0;
 							}
 							data.services.push(srv);
-							if(srv.id==array.length-1){
+							
+							// Lorsqu'on a terminé la liste
+							if(id==array.length-1){
 								this.trigger(data);
 							}
 						}
 					});
 				});
-			},
-			error: (x, t, m) => {
-				Actions.disableAgent(agent.id);
 			}
+		})
+		.fail(function(){
+			// Si l'agent n'a pas répondu, on le désactive dans le Panel Agent
+			Actions.disableAgent(this);
 		});
 	},
 	
-	onSelectService:function(id){
-		data.selected=id;
+	// Change le service sélectionné
+	onSelectService:function(service){
+		data.selected=service;
 		this.trigger(data);
 	},
 	

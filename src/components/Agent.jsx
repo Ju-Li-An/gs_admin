@@ -5,7 +5,7 @@ var Agent = React.createClass({
 	
 	select(event){
 		if(!event.isDefaultPrevented()){
-			Actions.selectAgent(this.props.agent.id);
+			Actions.selectAgent(this.props.agent);
 		}
 	},
 	

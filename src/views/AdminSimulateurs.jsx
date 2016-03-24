@@ -2,6 +2,12 @@ var React = require('react');
 var AgentsPanel = require('../components/AgentsPanel.jsx');
 var ServicesPanel = require('../components/ServicesPanel.jsx');
 var ApisPanel = require('../components/ApisPanel.jsx');
+var TPsPanel = require('../components/TPsPanel.jsx');
+var ParamsPanel = require('../components/ParamsPanel.jsx');
+var PropsPanel = require('../components/PropsPanel.jsx');
+var DataSetsPanel = require('../components/DataSetsPanel.jsx');
+var DataSetDetailsPanel = require('../components/DataSetDetailsPanel.jsx');
+var TemplatePanel = require('../components/TemplatePanel.jsx');
 
 var AdminSimulateurs = React.createClass({
 
@@ -16,47 +22,35 @@ var AdminSimulateurs = React.createClass({
 					<div className="col-lg-3">
 						<AgentsPanel/>
 					</div>
-					<div className="col-lg-5">
+					<div className="col-lg-4">
 						<ServicesPanel/>
 					</div>
-					<div className="col-lg-4">
+					<div className="col-lg-5">
 						<ApisPanel/>
 					</div>
 				</div>
 				
 				<div className="row">
-					<div className="col-lg-3">
-						<div className="panel panel-default">
-							<div className="panel-heading">Propriétés</div>
-							<div className="panel-body"></div>
-						</div>
-					</div>
 					<div className="col-lg-5">
-						<div className="panel panel-default">
-							<div className="panel-heading">Transfert Properties</div>
-							<div className="panel-body"></div>
-						</div>
+						<TPsPanel/>
 					</div>
 					<div className="col-lg-4">
-						<div className="panel panel-default">
-							<div className="panel-heading">Paramètres</div>
-							<div className="panel-body"></div>
-						</div>
+						<ParamsPanel/>
+					</div>
+					<div className="col-lg-3">
+						<PropsPanel/>
 					</div>
 				</div>
 				
 				<div className="row">
-					<div className="col-lg-6">
-						<div className="panel panel-default">
-							<div className="panel-heading">Templates</div>
-							<div className="panel-body"></div>
-						</div>
+					<div className="col-lg-3">
+						<DataSetsPanel/>
+					</div>
+					<div className="col-lg-3">
+						<DataSetDetailsPanel/>
 					</div>
 					<div className="col-lg-6">
-						<div className="panel panel-default">
-							<div className="panel-heading">DataSets</div>
-							<div className="panel-body"></div>
-						</div>
+						<TemplatePanel/>
 					</div>
 				</div>
 			</div>

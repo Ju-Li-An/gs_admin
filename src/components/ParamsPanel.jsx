@@ -2,43 +2,46 @@ var React = require('react');
 var Reflux = require('reflux');
 var Actions = require('../actions/Actions.js');
 var ApisStore = require('../stores/ApisStore.js');
-var Api = require('./Api.jsx');
+var Param = require('./Param.jsx');
 var Panel = require('./Panel.jsx');
 
-var ApisPanel = React.createClass({
+var ParamsPanel = React.createClass({
 	mixins: [
 			Reflux.listenTo(ApisStore, 'onStoreUpdate')
 	],
 	
 	getInitialState: function() {
 		var data = ApisStore.getDefaultData();
-		return {apis: data.apis, selected: data.selected};
+		return {params: []};
 	},
 	
 	onStoreUpdate(data){
-		this.setState({apis: data.apis,selected:data.selected});
+		this.setState({params: data.selected.parameters});
+	},
+	
+	addParam:function(){
+	
 	},
 
-
 	render: function() {
-		var apis = this.state.apis.map(function(api,index,array) {
+		var params = this.state.params.map(function(param,index,array) {
 			return (
-				<Api api={api} selected={api.name==this.state.selected.name}/>
+				<Param param={param} selected=''/>
 			);
 		},this);
 		
 		var links=(
-			<a href="#" onClick={this.addApi} className="pull-right btn-add" title="Ajouter une API / Opération">
+			<a href="#" onClick={this.addParam} className="pull-right btn-add" title="Ajouter un paramètre">
 				<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
 			</a>
 		);
 		
 		
 		return (
-			<Panel title="Apis / Opérations" links={links}>
+			<Panel title="Paramètre(s)" links={links}>
 				<table className="table table-condensed table-hover">
 					<tbody>
-						{apis}
+						{params}
 					</tbody>
 				</table>
 			</Panel>
@@ -46,4 +49,4 @@ var ApisPanel = React.createClass({
     }
 });
 
-module.exports = ApisPanel;
+module.exports = ParamsPanel;

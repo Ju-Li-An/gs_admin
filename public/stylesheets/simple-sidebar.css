@@ -10,7 +10,7 @@
 
 
 body{
-	font-family: "Tahoma","Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-family: "Tahoma Neue","Helvetica Neue",Helvetica,Arial,sans-serif;
 	font-size: 12px;
 }
 
@@ -25,7 +25,7 @@ body{
 }
 
 .panel{
-  margin-bottom:10px; 
+  margin-bottom:5px; 
   border-width: 1px 4px 4px 1px;
  /* background-color:#34a;*/
  
@@ -34,7 +34,7 @@ body{
 .panel-body{
    padding: 5px;
    overflow-y: auto;
-   height:25vh;
+   height:26vh;
 }
 
 table{
@@ -49,6 +49,20 @@ table{
 
 
 /* CUSTOM CSS */ 
+
+.template{
+	font-family: Arial;
+	font-size: 10px;
+}
+
+.separator{
+	padding-top: 5px;
+	margin-bottom:5px;
+	border-color: #ddd;
+	border-style:solid ;
+	border-width: 0 0 1px 0;
+}
+
 .btn-remove{
 	color:#d9534f;
 }
