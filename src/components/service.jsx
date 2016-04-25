@@ -33,7 +33,7 @@ var Service = React.createClass({
 				<tr className={ligneActive} onClick={selectable}> 
 					<th scope="row">{service.basepath}</th> 
 					<td>
-						<a href="#" onClick={this.remove} className="btn-remove pull-right"><span className="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+						<button className="btn-glyph-only btn-remove btn-xs pull-right" onClick={this.remove}><span className="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
 					</td> 
 				</tr>
 			 );

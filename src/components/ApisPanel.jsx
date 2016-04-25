@@ -26,11 +26,13 @@ var ApisPanel = React.createClass({
 				<Api api={api} selected={api.name==this.state.selected.name}/>
 			);
 		},this);
-		
+	
 		var links=(
-			<a href="#" onClick={this.addApi} className="pull-right btn-add" title="Ajouter une API / Opération">
-				<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
-			</a>
+			<div className="pull-right">
+					<a href="#" onClick={this.addApi} className="pull-right btn-add" title="Ajouter une API / Opération">
+						<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
+					</a>
+			</div>
 		);
 		
 		

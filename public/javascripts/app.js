@@ -7,6 +7,7 @@ var PropTypes = (typeof window !== "undefined" ? window['React'] : typeof global
 var Router = (typeof window !== "undefined" ? window['ReactRouter'] : typeof global !== "undefined" ? global['ReactRouter'] : null).Router;
 var Route = (typeof window !== "undefined" ? window['ReactRouter'] : typeof global !== "undefined" ? global['ReactRouter'] : null).Route;
 var Link = (typeof window !== "undefined" ? window['ReactRouter'] : typeof global !== "undefined" ? global['ReactRouter'] : null).Link;
+var Reflux = (typeof window !== "undefined" ? window['Reflux'] : typeof global !== "undefined" ? global['Reflux'] : null);
 
 var App = React.createClass({
 	displayName: 'App',
@@ -17,7 +18,9 @@ var App = React.createClass({
 	},
 
 	getInitialState: function getInitialState() {
-		return { menuToggle: "" };
+		return {
+			menuToggle: ""
+		};
 	},
 
 	toggleMenu: function toggleMenu(event) {
@@ -26,6 +29,7 @@ var App = React.createClass({
 	},
 
 	render: function render() {
+
 		return React.createElement(
 			'div',
 			{ id: 'wrapper', className: this.state.menuToggle },
@@ -103,8 +107,9 @@ module.exports = App;
 var Reflux = (typeof window !== "undefined" ? window['Reflux'] : typeof global !== "undefined" ? global['Reflux'] : null);
 
 var Actions = Reflux.createActions([
+
 // SERVICES ACTIONS
-"updateServices", "selectService",
+"refreshServicesList", "selectService", "changeServiceFilter",
 
 // API ACTIONS
 "selectApi",
@@ -113,7 +118,7 @@ var Actions = Reflux.createActions([
 "selectTp",
 
 // Datasets ACTIONS
-"selectDataset", "refreshDatasetsList",
+"selectDataset", "refreshDatasetsList", "changeDataSetFilter",
 
 // AGENT ACTIONS
 "selectAgent", "disableAgent", "refreshAgentList"]);
@@ -261,7 +266,7 @@ module.exports = AgentsPanel;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../actions/Actions.js":2,"../stores/AgentsStore.js":21,"./Agent.jsx":3,"./Panel.jsx":10}],5:[function(require,module,exports){
+},{"../actions/Actions.js":2,"../stores/AgentsStore.js":23,"./Agent.jsx":3,"./Panel.jsx":11}],5:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -354,9 +359,13 @@ var ApisPanel = React.createClass({
 		}, this);
 
 		var links = React.createElement(
-			'a',
-			{ href: '#', onClick: this.addApi, className: 'pull-right btn-add', title: 'Ajouter une API / Opération' },
-			React.createElement('span', { className: 'glyphicon glyphicon-plus', 'aria-hidden': 'true' })
+			'div',
+			{ className: 'pull-right' },
+			React.createElement(
+				'a',
+				{ href: '#', onClick: this.addApi, className: 'pull-right btn-add', title: 'Ajouter une API / Opération' },
+				React.createElement('span', { className: 'glyphicon glyphicon-plus', 'aria-hidden': 'true' })
+			)
 		);
 
 		return React.createElement(
@@ -379,7 +388,7 @@ module.exports = ApisPanel;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../actions/Actions.js":2,"../stores/ApisStore.js":22,"./Api.jsx":5,"./Panel.jsx":10}],7:[function(require,module,exports){
+},{"../actions/Actions.js":2,"../stores/ApisStore.js":24,"./Api.jsx":5,"./Panel.jsx":11}],7:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -406,6 +415,7 @@ var DataSet = React.createClass({
 
 		if (this.props.selected) {
 			ligneActive += " line-selected";
+			selectable = "";
 		}
 
 		return React.createElement(
@@ -482,9 +492,13 @@ var DataSetDetailsPanel = React.createClass({
 		}
 
 		var links = React.createElement(
-			'a',
-			{ href: '#', onClick: this.addDataset, className: 'pull-right btn-add', title: 'Ajouter un jdd' },
-			React.createElement('span', { className: 'glyphicon glyphicon-plus', 'aria-hidden': 'true' })
+			'div',
+			{ className: 'pull-right' },
+			React.createElement(
+				'a',
+				{ href: '#', onClick: this.addDataset, className: 'pull-right btn-add', title: 'Ajouter un jdd' },
+				React.createElement('span', { className: 'glyphicon glyphicon-plus', 'aria-hidden': 'true' })
+			)
 		);
 
 		var title = "Detail - " + this.state.dataset.value;
@@ -493,20 +507,12 @@ var DataSetDetailsPanel = React.createClass({
 			Panel,
 			{ title: title, links: links },
 			React.createElement(
-				'div',
-				{ className: 'table' },
+				'table',
+				{ className: 'table table-condensed table-hover' },
 				React.createElement(
-					'td',
+					'tbody',
 					null,
-					React.createElement(
-						'table',
-						{ className: 'table table-condensed table-hover' },
-						React.createElement(
-							'tbody',
-							null,
-							parameters
-						)
-					)
+					parameters
 				)
 			)
 		);
@@ -517,7 +523,7 @@ module.exports = DataSetDetailsPanel;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../actions/Actions.js":2,"../stores/DataSetsStore.js":23,"./Panel.jsx":10}],9:[function(require,module,exports){
+},{"../actions/Actions.js":2,"../stores/DataSetsStore.js":25,"./Panel.jsx":11}],9:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -535,11 +541,11 @@ var DataSetsPanel = React.createClass({
 
 	getInitialState: function getInitialState() {
 		var data = DataSetsStore.getDefaultData();
-		return { datasets: data.datasets, selected: data.selected, pages: data.pages, currentPage: data.currentPage };
+		return { datasets: data.datasets, selected: data.selected, pages: data.pages, currentPage: data.currentPage, filter: data.filter };
 	},
 
 	onStoreUpdate: function onStoreUpdate(data) {
-		this.setState({ datasets: data.datasets, selected: data.selected, pages: data.pages, currentPage: data.currentPage });
+		this.setState({ datasets: data.datasets, selected: data.selected, pages: data.pages, currentPage: data.currentPage, filter: data.filter });
 	},
 
 
@@ -549,6 +555,10 @@ var DataSetsPanel = React.createClass({
 
 	previous: function previous() {
 		Actions.refreshDatasetsList(this.state.currentPage - 1);
+	},
+
+	handleSearch: function handleSearch(filter) {
+		Actions.changeDataSetFilter(filter);
 	},
 
 	render: function render() {
@@ -577,6 +587,9 @@ var DataSetsPanel = React.createClass({
 		var links = React.createElement(
 			'div',
 			{ className: 'pull-right' },
+			this.state.currentPage,
+			' / ',
+			this.state.pages,
 			linkPrevious,
 			linkNext,
 			React.createElement(
@@ -588,22 +601,14 @@ var DataSetsPanel = React.createClass({
 
 		return React.createElement(
 			Panel,
-			{ title: 'DataSets', links: links },
+			{ title: 'DataSets', links: links, search: this.handleSearch },
 			React.createElement(
-				'div',
-				{ className: 'table' },
+				'table',
+				{ className: 'table table-condensed table-hover' },
 				React.createElement(
-					'td',
+					'tbody',
 					null,
-					React.createElement(
-						'table',
-						{ className: 'table table-condensed table-hover' },
-						React.createElement(
-							'tbody',
-							null,
-							datasets
-						)
-					)
+					datasets
 				)
 			)
 		);
@@ -614,7 +619,75 @@ module.exports = DataSetsPanel;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../actions/Actions.js":2,"../stores/DataSetsStore.js":23,"./DataSet.jsx":7,"./Panel.jsx":10}],10:[function(require,module,exports){
+},{"../actions/Actions.js":2,"../stores/DataSetsStore.js":25,"./DataSet.jsx":7,"./Panel.jsx":11}],10:[function(require,module,exports){
+(function (global){
+'use strict';
+
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+var PropTypes = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null).PropTypes;
+
+var Modal = React.createClass({
+	displayName: 'Modal',
+
+
+	propTypes: {
+		children: PropTypes.object
+	},
+
+	render: function render() {
+
+		return React.createElement(
+			'div',
+			{ className: 'modal fade', id: this.props.id, tabIndex: '-1', role: 'dialog', 'aria-labelledby': this.props.title },
+			React.createElement(
+				'div',
+				{ className: 'modal-dialog', role: 'document' },
+				React.createElement(
+					'div',
+					{ className: 'modal-content' },
+					React.createElement(
+						'div',
+						{ className: 'modal-header' },
+						React.createElement(
+							'button',
+							{ type: 'button', className: 'close', 'data-dismiss': 'modal', 'aria-label': 'Close' },
+							React.createElement(
+								'span',
+								{ 'aria-hidden': 'true' },
+								'×'
+							)
+						),
+						React.createElement(
+							'h4',
+							{ className: 'modal-title', id: 'myModalLabel' },
+							this.props.title
+						)
+					),
+					React.createElement(
+						'div',
+						{ className: 'modal-body' },
+						this.props.children
+					),
+					React.createElement(
+						'div',
+						{ className: 'modal-footer' },
+						React.createElement(
+							'button',
+							{ type: 'button', className: 'btn btn-default', 'data-dismiss': 'modal' },
+							'Close'
+						)
+					)
+				)
+			)
+		);
+	}
+});
+
+module.exports = Modal;
+
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],11:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -629,7 +702,15 @@ var Panel = React.createClass({
 		children: PropTypes.object
 	},
 
+	onchange: function onchange(event) {
+		this.props.search(event.target.value);
+	},
+
 	render: function render() {
+		var searchBox;
+		if (this.props.search) {
+			searchBox = React.createElement('input', { type: 'text', onKeyUp: this.onchange, className: 'form-control searchbox', placeholder: 'Search for...' });
+		}
 
 		return React.createElement(
 			'div',
@@ -637,8 +718,25 @@ var Panel = React.createClass({
 			React.createElement(
 				'div',
 				{ className: 'panel-heading' },
-				this.props.title,
-				this.props.links
+				React.createElement(
+					'form',
+					{ className: 'form-inline' },
+					React.createElement(
+						'div',
+						{ className: 'form-group' },
+						this.props.title
+					),
+					React.createElement(
+						'div',
+						{ className: 'form-group' },
+						searchBox
+					),
+					React.createElement(
+						'div',
+						{ className: 'form-group pull-right' },
+						this.props.links
+					)
+				)
 			),
 			React.createElement(
 				'div',
@@ -653,7 +751,7 @@ module.exports = Panel;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -700,7 +798,7 @@ module.exports = Param;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../actions/Actions.js":2}],12:[function(require,module,exports){
+},{"../actions/Actions.js":2}],13:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -734,9 +832,13 @@ var ParamsPanel = React.createClass({
 		}, this);
 
 		var links = React.createElement(
-			'a',
-			{ href: '#', onClick: this.addParam, className: 'pull-right btn-add', title: 'Ajouter un paramètre' },
-			React.createElement('span', { className: 'glyphicon glyphicon-plus', 'aria-hidden': 'true' })
+			'div',
+			{ className: 'pull-right' },
+			React.createElement(
+				'a',
+				{ href: '#', onClick: this.addParam, className: 'pull-right btn-add', title: 'Ajouter un paramètre' },
+				React.createElement('span', { className: 'glyphicon glyphicon-plus', 'aria-hidden': 'true' })
+			)
 		);
 
 		return React.createElement(
@@ -759,7 +861,7 @@ module.exports = ParamsPanel;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../actions/Actions.js":2,"../stores/ApisStore.js":22,"./Panel.jsx":10,"./Param.jsx":11}],13:[function(require,module,exports){
+},{"../actions/Actions.js":2,"../stores/ApisStore.js":24,"./Panel.jsx":11,"./Param.jsx":12}],14:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -796,9 +898,13 @@ var PropsPanel = React.createClass({
 	render: function render() {
 
 		var links = React.createElement(
-			'a',
-			{ href: '#', className: 'pull-right btn-add', title: 'Editer les propriétés' },
-			React.createElement('span', { className: 'glyphicon glyphicon-plus', 'aria-hidden': 'true' })
+			'div',
+			{ className: 'pull-right' },
+			React.createElement(
+				'a',
+				{ href: '#', className: 'pull-right btn-add', title: 'Editer les propriétés' },
+				React.createElement('span', { className: 'glyphicon glyphicon-plus', 'aria-hidden': 'true' })
+			)
 		);
 
 		var regExps = this.state.regExpKeys.map(function (regExpKey, index, array) {
@@ -831,40 +937,44 @@ var PropsPanel = React.createClass({
 				'div',
 				null,
 				React.createElement(
-					'strong',
+					'div',
 					null,
-					'Response Type: '
+					React.createElement(
+						'strong',
+						null,
+						'Response Type: '
+					),
+					this.state.responseType
 				),
-				this.state.responseType
-			),
-			React.createElement(
-				'div',
-				null,
 				React.createElement(
-					'strong',
+					'div',
 					null,
-					'Delay: '
+					React.createElement(
+						'strong',
+						null,
+						'Delay: '
+					),
+					this.state.delay,
+					' ms'
 				),
-				this.state.delay,
-				' ms'
-			),
-			React.createElement(
-				'div',
-				null,
 				React.createElement(
-					'strong',
+					'div',
 					null,
-					'Error Template: '
+					React.createElement(
+						'strong',
+						null,
+						'Error Template: '
+					),
+					this.state.errorTemplate
 				),
-				this.state.errorTemplate
-			),
-			React.createElement(
-				'table',
-				{ className: 'table table-condensed' },
 				React.createElement(
-					'tbody',
-					null,
-					regExps
+					'table',
+					{ className: 'table table-condensed' },
+					React.createElement(
+						'tbody',
+						null,
+						regExps
+					)
 				)
 			)
 		);
@@ -875,7 +985,7 @@ module.exports = PropsPanel;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../actions/Actions.js":2,"../stores/ApisStore.js":22,"./Panel.jsx":10}],14:[function(require,module,exports){
+},{"../actions/Actions.js":2,"../stores/ApisStore.js":24,"./Panel.jsx":11}],15:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -921,8 +1031,8 @@ var Service = React.createClass({
 				'td',
 				null,
 				React.createElement(
-					'a',
-					{ href: '#', onClick: this.remove, className: 'btn-remove pull-right' },
+					'button',
+					{ className: 'btn-glyph-only btn-remove btn-xs pull-right', onClick: this.remove },
 					React.createElement('span', { className: 'glyphicon glyphicon-remove', 'aria-hidden': 'true' })
 				)
 			)
@@ -934,7 +1044,96 @@ module.exports = Service;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../actions/Actions.js":2}],15:[function(require,module,exports){
+},{"../actions/Actions.js":2}],16:[function(require,module,exports){
+(function (global){
+"use strict";
+
+var React = (typeof window !== "undefined" ? window['React'] : typeof global !== "undefined" ? global['React'] : null);
+
+var ServiceEditor = React.createClass({
+	displayName: "ServiceEditor",
+
+
+	handleSubmit: function handleSubmit(event) {
+		if (!event.isDefaultPrevented()) {
+			console.log(event.target);
+		}
+	},
+
+	render: function render() {
+
+		return React.createElement(
+			"form",
+			{ id: "serviceEditorForm", "data-toggle": "validator", role: "form", onSubmit: this.handleSubmit },
+			React.createElement(
+				"div",
+				{ className: "form-group" },
+				React.createElement(
+					"label",
+					{ htmlFor: "appName", className: "control-label" },
+					"Nom de l'application"
+				),
+				React.createElement("input", { type: "text", className: "form-control", id: "appName", placeholder: "BIOSPDC", required: true })
+			),
+			React.createElement(
+				"div",
+				{ className: "form-group has-feedback" },
+				React.createElement(
+					"label",
+					{ htmlFor: "serviceName", className: "control-label" },
+					"Nom du service"
+				),
+				React.createElement("input", { type: "text", className: "form-control", id: "serviceName", placeholder: "parcInstalle", required: true }),
+				React.createElement("span", { className: "glyphicon form-control-feedback", "aria-hidden": "true" }),
+				React.createElement(
+					"div",
+					{ className: "help-block with-errors" },
+					"Hey look, this one has feedback icons!"
+				)
+			),
+			React.createElement(
+				"div",
+				{ className: "form-group" },
+				React.createElement(
+					"label",
+					{ htmlFor: "serviceVersion", className: "control-label" },
+					"Version du service"
+				),
+				React.createElement("input", { type: "text", className: "form-control", id: "serviceVersion", placeholder: "1", required: true })
+			),
+			React.createElement(
+				"div",
+				{ className: "form-group" },
+				React.createElement(
+					"div",
+					{ className: "checkbox" },
+					React.createElement(
+						"label",
+						null,
+						React.createElement("input", { type: "checkbox", id: "terms", "data-error": "Before you wreck yourself", required: true }),
+						"Check yourself"
+					),
+					React.createElement("div", { className: "help-block with-errors" })
+				)
+			),
+			React.createElement(
+				"div",
+				{ className: "form-group" },
+				React.createElement(
+					"button",
+					{ type: "submit", className: "btn btn-primary" },
+					"Valider"
+				)
+			)
+		);
+	}
+});
+
+module.exports = ServiceEditor;
+
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],17:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -944,6 +1143,8 @@ var Actions = require('../actions/Actions.js');
 var ServicesStore = require('../stores/ServicesStore.js');
 var Service = require('./Service.jsx');
 var Panel = require('./Panel.jsx');
+var Modal = require('./Modal.jsx');
+var ServiceEditor = require('./ServiceEditor.jsx');
 
 var ServicesPanel = React.createClass({
 	displayName: 'ServicesPanel',
@@ -952,35 +1153,87 @@ var ServicesPanel = React.createClass({
 
 	getInitialState: function getInitialState() {
 		var data = ServicesStore.getDefaultData();
-		return { services: data.services, selected: data.selected };
+		return { services: data.services, selected: data.selected, pages: data.pages, currentPage: data.currentPage, filter: data.filter };
 	},
 
 	onStoreUpdate: function onStoreUpdate(data) {
-		this.setState({ services: data.services, selected: data.selected });
+		this.setState({ services: data.services, selected: data.selected, pages: data.pages, currentPage: data.currentPage, filter: data.filter });
 	},
 
+
+	next: function next() {
+		Actions.refreshServicesList(this.state.currentPage + 1);
+	},
+
+	previous: function previous() {
+		Actions.refreshServicesList(this.state.currentPage - 1);
+	},
+
+	addService: function addService() {},
+
+	handleSearch: function handleSearch(filter) {
+		Actions.changeServiceFilter(filter);
+	},
 
 	render: function render() {
 		var services = this.state.services.map(function (service, index, array) {
 			return React.createElement(Service, { service: service, selected: service.basepath === this.state.selected.basepath });
 		}, this);
 
-		var links = React.createElement(
-			'a',
-			{ href: '#', onClick: this.addService, className: 'pull-right btn-add', title: 'Ajouter un service' },
+		var linkPrevious;
+		if (this.state.currentPage != 1) {
+			linkPrevious = React.createElement(
+				'a',
+				{ href: '#', onClick: this.previous, className: 'btn-add', title: 'Précédent' },
+				React.createElement('span', { className: 'glyphicon glyphicon-menu-left', 'aria-hidden': 'true' })
+			);
+		}
+
+		var linkNext;
+		if (this.state.currentPage != this.state.pages) {
+			linkNext = React.createElement(
+				'a',
+				{ href: '#', onClick: this.next, className: 'btn-add', title: 'Suivant' },
+				React.createElement('span', { className: 'glyphicon glyphicon-menu-right', 'aria-hidden': 'true' })
+			);
+		}
+
+		var linkAdd = React.createElement(
+			'button',
+			{ type: 'button', className: 'btn-glyph-only btn-xs', 'data-toggle': 'modal', 'data-target': '#serviceEditor', 'aria-label': 'Nouveau Service' },
 			React.createElement('span', { className: 'glyphicon glyphicon-plus', 'aria-hidden': 'true' })
+		);
+
+		var links = React.createElement(
+			'div',
+			{ className: 'pull-right' },
+			this.state.currentPage,
+			' / ',
+			this.state.pages,
+			linkPrevious,
+			linkNext,
+			linkAdd
 		);
 
 		return React.createElement(
 			Panel,
-			{ title: 'Services', links: links },
+			{ title: 'Services', links: links, search: this.handleSearch },
 			React.createElement(
-				'table',
-				{ className: 'table table-condensed table-hover' },
+				'div',
+				null,
 				React.createElement(
-					'tbody',
-					null,
-					services
+					'table',
+					{ className: 'table table-condensed table-hover' },
+					React.createElement(
+						'tbody',
+						null,
+						services
+					)
+				),
+				React.createElement(
+					Modal,
+					{ id: 'serviceEditor', title: 'Editeur de service' },
+					React.createElement(ServiceEditor, null)
 				)
 			)
 		);
@@ -991,7 +1244,7 @@ module.exports = ServicesPanel;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../actions/Actions.js":2,"../stores/ServicesStore.js":24,"./Panel.jsx":10,"./Service.jsx":14}],16:[function(require,module,exports){
+},{"../actions/Actions.js":2,"../stores/ServicesStore.js":26,"./Modal.jsx":10,"./Panel.jsx":11,"./Service.jsx":15,"./ServiceEditor.jsx":16}],18:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1045,7 +1298,7 @@ module.exports = TP;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../actions/Actions.js":2}],17:[function(require,module,exports){
+},{"../actions/Actions.js":2}],19:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1074,11 +1327,16 @@ var TPsPanel = React.createClass({
 	addTp: function addTp() {},
 
 	render: function render() {
+		var title = "Transfert(s) - key: ";
+
+		// Peut être optimisé en inversant la recherche des clés.
 		var tps = this.state.tps.map(function (tp, index, array) {
+
 			var tpKey = 0;
 			for (var idKey in this.state.keys) {
 				if (this.state.keys[idKey].name == tp.name) {
 					tpKey = 1;
+					title += tp.name + ".";
 					break;
 				}
 			}
@@ -1086,14 +1344,18 @@ var TPsPanel = React.createClass({
 		}, this);
 
 		var links = React.createElement(
-			'a',
-			{ href: '#', onClick: this.addTp, className: 'pull-right btn-add', title: 'Ajouter une Transfert Property' },
-			React.createElement('span', { className: 'glyphicon glyphicon-plus', 'aria-hidden': 'true' })
+			'div',
+			{ className: 'pull-right' },
+			React.createElement(
+				'a',
+				{ href: '#', onClick: this.addTp, className: 'pull-right btn-add', title: 'Ajouter une Transfert Property' },
+				React.createElement('span', { className: 'glyphicon glyphicon-plus', 'aria-hidden': 'true' })
+			)
 		);
 
 		return React.createElement(
 			Panel,
-			{ title: 'Transfert(s)', links: links },
+			{ title: title, links: links },
 			React.createElement(
 				'table',
 				{ className: 'table table-condensed table-hover' },
@@ -1111,7 +1373,7 @@ module.exports = TPsPanel;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../actions/Actions.js":2,"../stores/ApisStore.js":22,"./Panel.jsx":10,"./TP.jsx":16}],18:[function(require,module,exports){
+},{"../actions/Actions.js":2,"../stores/ApisStore.js":24,"./Panel.jsx":11,"./TP.jsx":18}],20:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1125,74 +1387,78 @@ var DataSetsStore = require('../stores/DataSetsStore.js');
 var Panel = require('./Panel.jsx');
 
 var TemplatePanel = React.createClass({
-	displayName: 'TemplatePanel',
+		displayName: 'TemplatePanel',
 
-	mixins: [Reflux.listenTo(DataSetsStore, 'onStoreUpdate')],
+		mixins: [Reflux.listenTo(DataSetsStore, 'onStoreUpdate')],
 
-	getInitialState: function getInitialState() {
-		var data = DataSetsStore.getDefaultData();
-		return { name: data.selected.template.name, content: data.selected.template.content };
-	},
+		getInitialState: function getInitialState() {
+				var data = DataSetsStore.getDefaultData();
+				return { name: data.selected.template.name, content: data.selected.template.content };
+		},
 
-	onStoreUpdate: function onStoreUpdate(data) {
-		this.setState({ name: data.selected.template.name, content: data.selected.template.content });
-	},
+		onStoreUpdate: function onStoreUpdate(data) {
+				this.setState({ name: data.selected.template.name, content: data.selected.template.content });
+		},
 
-	/*componentDidMount: function () {
-    this.highlightCode();
-  },
-  componentDidUpdate: function () {
-    this.highlightCode();
-  },
- 
- highlightCode: function () {
-    var domNode = ReactDOM.findDOMNode(this);
-    var nodes = domNode.querySelectorAll('pre code');
-    if (nodes.length > 0) {
-      for (var i = 0; i < nodes.length; i=i+1) {
-        hljs.highlightBlock(nodes[i]);
-      }
-    }
-  },*/
+		/*componentDidMount: function () {
+     this.highlightCode();
+   },
+   componentDidUpdate: function () {
+     this.highlightCode();
+   },
+  
+  highlightCode: function () {
+     var domNode = ReactDOM.findDOMNode(this);
+     var nodes = domNode.querySelectorAll('pre code');
+     if (nodes.length > 0) {
+       for (var i = 0; i < nodes.length; i=i+1) {
+         hljs.highlightBlock(nodes[i]);
+       }
+     }
+   },*/
 
-	render: function render() {
+		render: function render() {
 
-		var links = React.createElement(
-			'a',
-			{ href: '#', onClick: this.addDataset, className: 'pull-right btn-add', title: 'Modifier le template' },
-			React.createElement('span', { className: 'glyphicon glyphicon-plus', 'aria-hidden': 'true' })
-		);
+				var links = React.createElement(
+						'div',
+						{ className: 'pull-right' },
+						React.createElement(
+								'a',
+								{ href: '#', onClick: this.addDataset, className: 'pull-right btn-add', title: 'Modifier le template' },
+								React.createElement('span', { className: 'glyphicon glyphicon-plus', 'aria-hidden': 'true' })
+						)
+				);
 
-		var title = "Template - " + this.state.name;
+				var title = "Template - " + this.state.name;
 
-		var content = this.state.content;
-		var document = "";
+				var content = this.state.content;
+				var document = "";
 
-		if (content) {
-			document = content.documentElement.outerHTML;
+				if (content) {
+						document = content.documentElement.outerHTML;
+				}
+
+				return React.createElement(
+						Panel,
+						{ title: title, links: links },
+						React.createElement(
+								'pre',
+								null,
+								React.createElement(
+										'code',
+										{ className: 'template' },
+										document
+								)
+						)
+				);
 		}
-
-		return React.createElement(
-			Panel,
-			{ title: title, links: links },
-			React.createElement(
-				'pre',
-				null,
-				React.createElement(
-					'code',
-					{ className: 'template' },
-					document
-				)
-			)
-		);
-	}
 });
 
 module.exports = TemplatePanel;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../actions/Actions.js":2,"../stores/DataSetsStore.js":23,"./Panel.jsx":10}],19:[function(require,module,exports){
+},{"../actions/Actions.js":2,"../stores/DataSetsStore.js":25,"./Panel.jsx":11}],21:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1203,7 +1469,7 @@ ReactDOM.render(routes, document.getElementById('app'));
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./routes.jsx":20}],20:[function(require,module,exports){
+},{"./routes.jsx":22}],22:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1228,7 +1494,7 @@ module.exports = React.createElement(
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./App.jsx":1,"./views/AdminSimulateurs.jsx":25}],21:[function(require,module,exports){
+},{"./App.jsx":1,"./views/AdminSimulateurs.jsx":27}],23:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1275,7 +1541,7 @@ module.exports = AgentsStore;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../actions/Actions.js":2}],22:[function(require,module,exports){
+},{"../actions/Actions.js":2}],24:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1336,7 +1602,7 @@ module.exports = ApisStore;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../actions/Actions.js":2,"./ServicesStore.js":24}],23:[function(require,module,exports){
+},{"../actions/Actions.js":2,"./ServicesStore.js":26}],25:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1344,11 +1610,12 @@ var Reflux = (typeof window !== "undefined" ? window['Reflux'] : typeof global !
 var Actions = require('../actions/Actions.js');
 var ApisStore = require('./ApisStore.js');
 
-var dataSetsPerPage = 8;
+var dataSetsPerPage = 10;
 
 var data = {
 	datasets: [],
 	currentService: '',
+	filter: '',
 	currentApi: '',
 	currentOpe: '',
 	agent: {},
@@ -1372,6 +1639,7 @@ var DataSetsStore = Reflux.createStore({
 		data.currentService = storeData.currentService;
 		data.currentApi = storeData.selected.name;
 		data.currentOpe = storeData.selected.method;
+		data.filter = '';
 
 		//si le statut de l'agent est arrêté, on ne tente pas l'appel pour afficher les services
 		if (!data.agent.status) {
@@ -1382,18 +1650,24 @@ var DataSetsStore = Reflux.createStore({
 		this.onRefreshDatasetsList(1);
 	},
 
+	onChangeDataSetFilter: function onChangeDataSetFilter(filter) {
+		data.filter = filter;
+		this.onRefreshDatasetsList(1);
+	},
+
 	onRefreshDatasetsList: function onRefreshDatasetsList(pageNum) {
 		var _this = this;
 
 		data.datasets = [];
 		data.selected = {};
+
 		var count = 0;
 
 		var agentUrl = 'http://' + data.agent.hostname + ':' + data.agent.port + '/';
 
 		// Récupération de la liste des Services
 		$.ajax({
-			url: '' + agentUrl + data.currentService + '/' + data.currentApi + '/' + data.currentOpe + '/datasets?pageNum=' + pageNum + '&pageSize=' + dataSetsPerPage + '&filter=null',
+			url: '' + agentUrl + data.currentService + '/' + data.currentApi + '/' + data.currentOpe + '/datasets?pageNum=' + pageNum + '&pageSize=' + dataSetsPerPage + '&filter=' + data.filter,
 			type: "GET",
 			dataType: "json",
 			success: function success(result) {
@@ -1402,6 +1676,8 @@ var DataSetsStore = Reflux.createStore({
 				data.currentPage = pageNum;
 				if (data.datasets.length > 0) {
 					_this.onSelectDataset(data.datasets[0]);
+				} else {
+					_this.trigger(data);
 				}
 			},
 			error: function error(x, t, m) {
@@ -1463,7 +1739,7 @@ module.exports = DataSetsStore;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../actions/Actions.js":2,"./ApisStore.js":22}],24:[function(require,module,exports){
+},{"../actions/Actions.js":2,"./ApisStore.js":24}],26:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1471,11 +1747,15 @@ var Reflux = (typeof window !== "undefined" ? window['Reflux'] : typeof global !
 var Actions = require('../actions/Actions.js');
 var AgentsStore = require('./AgentsStore.js');
 
+var servicesPerPage = 10;
+
 var data = {
 	services: [],
 	agent: {},
 	selected: -1,
-	currentPage: 1
+	currentPage: 1,
+	filter: '',
+	pages: 1
 };
 
 var ServicesStore = Reflux.createStore({
@@ -1498,30 +1778,40 @@ var ServicesStore = Reflux.createStore({
 		}
 
 		// Rafrachissement de la liste des services après changement de l'agent
-		this.onRefreshServiceList();
+		this.onRefreshServicesList(1);
 	},
 
-	onRefreshServiceList: function onRefreshServiceList() {
+	onChangeServiceFilter: function onChangeServiceFilter(filter) {
+		if (filter != data.filter) {
+			data.filter = filter;
+			this.onRefreshServicesList(1);
+		}
+	},
+
+	onRefreshServicesList: function onRefreshServicesList(pageNum) {
 		var _this = this;
 
 		data.services = [];
 		data.selected = -1;
 		var count = 0;
 
-		var agentUrl = 'http://' + data.agent.hostname + ':' + data.agent.port + '/';
+		var agentUrl = 'http://' + data.agent.hostname + ':' + data.agent.port;
 
 		// Récupération de la liste des Services
 		$.ajax({
-			url: agentUrl + 'list',
+			url: agentUrl + '/list?pageNum=' + pageNum + '&pageSize=' + servicesPerPage + '&filter=' + data.filter,
 			type: "GET",
 			dataType: "json",
 			context: data.agent,
 			success: function success(result) {
 
-				// Pour chaque servie, récupération de sa configuration
-				result.forEach(function (res, index, array) {
+				data.currentPage = pageNum;
+				data.pages = Math.ceil(result.totalSize / servicesPerPage);
+
+				// Pour chaque service, récupération de sa configuration
+				result.page.forEach(function (res, index, array) {
 					$.ajax({
-						url: agentUrl + res,
+						url: agentUrl + '/' + res.value,
 						type: "GET",
 						dataType: "json",
 						success: function success(srv) {
@@ -1563,7 +1853,7 @@ module.exports = ServicesStore;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../actions/Actions.js":2,"./AgentsStore.js":21}],25:[function(require,module,exports){
+},{"../actions/Actions.js":2,"./AgentsStore.js":23}],27:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1632,7 +1922,7 @@ var AdminSimulateurs = React.createClass({
 				{ className: 'row' },
 				React.createElement(
 					'div',
-					{ className: 'col-lg-3' },
+					{ className: 'col-lg-4' },
 					React.createElement(DataSetsPanel, null)
 				),
 				React.createElement(
@@ -1642,7 +1932,7 @@ var AdminSimulateurs = React.createClass({
 				),
 				React.createElement(
 					'div',
-					{ className: 'col-lg-6' },
+					{ className: 'col-lg-5' },
 					React.createElement(TemplatePanel, null)
 				)
 			)
@@ -1655,4 +1945,4 @@ module.exports = AdminSimulateurs;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../components/AgentsPanel.jsx":4,"../components/ApisPanel.jsx":6,"../components/DataSetDetailsPanel.jsx":8,"../components/DataSetsPanel.jsx":9,"../components/ParamsPanel.jsx":12,"../components/PropsPanel.jsx":13,"../components/ServicesPanel.jsx":15,"../components/TPsPanel.jsx":17,"../components/TemplatePanel.jsx":18}]},{},[19]);
+},{"../components/AgentsPanel.jsx":4,"../components/ApisPanel.jsx":6,"../components/DataSetDetailsPanel.jsx":8,"../components/DataSetsPanel.jsx":9,"../components/ParamsPanel.jsx":13,"../components/PropsPanel.jsx":14,"../components/ServicesPanel.jsx":17,"../components/TPsPanel.jsx":19,"../components/TemplatePanel.jsx":20}]},{},[21]);

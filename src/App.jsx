@@ -3,16 +3,21 @@ var PropTypes = require('react').PropTypes;
 var Router = require('react-router').Router;
 var Route = require('react-router').Route;
 var Link = require('react-router').Link;
+var Reflux = require('reflux');
+
 
 var App = React.createClass({
 
 	propTypes: {
         children: PropTypes.object
     },
-	
+		
 	getInitialState: function() {
-		return {menuToggle:""};
+		return {
+			menuToggle:""
+		};
 	},
+	
   
 	toggleMenu: function(event) {
 		event.preventDefault();
@@ -23,6 +28,7 @@ var App = React.createClass({
     },
 	
 	render: function() {
+
 		return(
 			<div id="wrapper" className={this.state.menuToggle}>
 				<div id="sidebar-wrapper">

@@ -38,6 +38,7 @@ var AgentsPanel = React.createClass({
 				<a href="#" onClick={this.refreshList} className="btn-add" title="Actualiser la liste">
 					<span className="glyphicon glyphicon-refresh" aria-hidden="true"></span>
 				</a>
+
 				<a href="#" onClick={this.addAgent} className="btn-add" title="Ajouter un agent">
 					<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
 				</a>

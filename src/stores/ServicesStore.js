@@ -2,11 +2,15 @@
 var Actions= require('../actions/Actions.js');
 var AgentsStore = require('./AgentsStore.js');
 
+let servicesPerPage = 10;
+
 let data = {
 	services:[],
 	agent:{},
 	selected:-1,
 	currentPage:1,
+	filter:'',
+	pages:1
 };
 
 var ServicesStore = Reflux.createStore({
@@ -29,29 +33,39 @@ var ServicesStore = Reflux.createStore({
 		}
 		
 		// Rafrachissement de la liste des services après changement de l'agent
-		this.onRefreshServiceList();
+		this.onRefreshServicesList(1);
 		
 	},
 	
-	onRefreshServiceList:function(){
+	onChangeServiceFilter:function(filter){
+		if(filter != data.filter){
+			data.filter=filter;
+			this.onRefreshServicesList(1);
+		}
+	},
+	
+	onRefreshServicesList:function(pageNum){
 		data.services=[];
 		data.selected=-1;
 		var count=0;
 		
-		var agentUrl='http://'+data.agent.hostname+':'+data.agent.port+'/';
+		var agentUrl='http://'+data.agent.hostname+':'+data.agent.port;
 
 		// Récupération de la liste des Services
 		$.ajax({
-			url: agentUrl+'list',
+			url: `${agentUrl}/list?pageNum=${pageNum}&pageSize=${servicesPerPage}&filter=${data.filter}`,
 			type: "GET",
 			dataType: "json",
 			context: data.agent,
 			success: (result) => {
 			
-				// Pour chaque servie, récupération de sa configuration
-				result.forEach((res,index,array) => {
+				data.currentPage=pageNum;
+				data.pages=Math.ceil(result.totalSize/servicesPerPage);
+			
+				// Pour chaque service, récupération de sa configuration
+				result.page.forEach((res,index,array) => {
 					$.ajax({
-						url: agentUrl+res,
+						url: `${agentUrl}/${res.value}`,
 						type: "GET",
 						dataType: "json",
 						success: (srv) => {

@@ -2,11 +2,12 @@
 var Actions= require('../actions/Actions.js');
 var ApisStore = require('./ApisStore.js');
 
-let dataSetsPerPage = 8;
+let dataSetsPerPage = 10;
 
 let data = {
 	datasets:[],
 	currentService:'',
+	filter:'',
 	currentApi:'',
 	currentOpe:'',
 	agent:{},
@@ -30,6 +31,7 @@ var DataSetsStore = Reflux.createStore({
 		data.currentService = storeData.currentService;
 		data.currentApi=storeData.selected.name;
 		data.currentOpe=storeData.selected.method;
+		data.filter='';
 		
 		//si le statut de l'agent est arrêté, on ne tente pas l'appel pour afficher les services
 		if(!data.agent.status){
@@ -41,17 +43,22 @@ var DataSetsStore = Reflux.createStore({
 		
 	},
 	
-
+	onChangeDataSetFilter:function(filter){
+		data.filter=filter;
+		this.onRefreshDatasetsList(1);
+	},
+	
 	onRefreshDatasetsList:function(pageNum){
 		data.datasets=[];
 		data.selected={};
+		
 		var count=0;
 		
 		var agentUrl='http://'+data.agent.hostname+':'+data.agent.port+'/';
 
 		// Récupération de la liste des Services
 		$.ajax({
-			url: `${agentUrl}${data.currentService}/${data.currentApi}/${data.currentOpe}/datasets?pageNum=${pageNum}&pageSize=${dataSetsPerPage}&filter=null`,
+			url: `${agentUrl}${data.currentService}/${data.currentApi}/${data.currentOpe}/datasets?pageNum=${pageNum}&pageSize=${dataSetsPerPage}&filter=${data.filter}`,
 			type: "GET",
 			dataType: "json",
 			success: (result) => {
@@ -60,6 +67,8 @@ var DataSetsStore = Reflux.createStore({
 				data.currentPage=pageNum;
 				if(data.datasets.length>0){
 					this.onSelectDataset(data.datasets[0]);
+				}else{
+					this.trigger(data);
 				}
 			},
 			error: (x, t, m) => {

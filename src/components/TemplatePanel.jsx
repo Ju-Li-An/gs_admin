@@ -40,9 +40,11 @@ var TemplatePanel = React.createClass({
 	render: function() {
 		
 		var links=(
-			<a href="#" onClick={this.addDataset} className="pull-right btn-add" title="Modifier le template">
-				<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
-			</a>
+			<div className="pull-right">
+					<a href="#" onClick={this.addDataset} className="pull-right btn-add" title="Modifier le template">
+						<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
+					</a>
+				</div>
 		);
 		
 		var title="Template - "+this.state.name;

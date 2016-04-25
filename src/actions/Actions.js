@@ -1,9 +1,12 @@
 var Reflux = require('reflux');
 
 var Actions = Reflux.createActions([
+
 	// SERVICES ACTIONS
-    "updateServices",
+  "refreshServicesList",
 	"selectService",
+	"changeServiceFilter",
+	
 	
 	// API ACTIONS
 	"selectApi",
@@ -14,11 +17,13 @@ var Actions = Reflux.createActions([
 	// Datasets ACTIONS
 	"selectDataset",
 	"refreshDatasetsList",
+	"changeDataSetFilter",
 	
 	// AGENT ACTIONS
 	"selectAgent",
 	"disableAgent",
 	"refreshAgentList"
+	
 ]); 
 
 module.exports = Actions;

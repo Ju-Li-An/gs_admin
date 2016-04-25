@@ -31,9 +31,11 @@ var ParamsPanel = React.createClass({
 		},this);
 		
 		var links=(
-			<a href="#" onClick={this.addParam} className="pull-right btn-add" title="Ajouter un paramètre">
-				<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
-			</a>
+			<div className="pull-right">
+					<a href="#" onClick={this.addParam} className="pull-right btn-add" title="Ajouter un paramètre">
+						<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
+					</a>
+				</div>
 		);
 		
 		

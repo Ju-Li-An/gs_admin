@@ -12,11 +12,11 @@ var DataSetsPanel = React.createClass({
 	
 	getInitialState: function() {
 		var data = DataSetsStore.getDefaultData();
-		return {datasets: data.datasets, selected: data.selected, pages:data.pages, currentPage:data.currentPage};
+		return {datasets: data.datasets, selected: data.selected, pages:data.pages, currentPage:data.currentPage,filter:data.filter};
 	},
 	
 	onStoreUpdate(data){
-		this.setState({datasets: data.datasets, selected: data.selected, pages:data.pages, currentPage:data.currentPage});
+		this.setState({datasets: data.datasets, selected: data.selected, pages:data.pages, currentPage:data.currentPage,filter:data.filter});
 	},
 	
 	next:function(){
@@ -26,6 +26,12 @@ var DataSetsPanel = React.createClass({
 	previous:function(){
 		Actions.refreshDatasetsList(this.state.currentPage-1);
 	},
+	
+	
+	handleSearch:function(filter){
+		Actions.changeDataSetFilter(filter);
+	},
+	
 
 	render: function() {
 		var datasets = this.state.datasets.map(function(dataset,index,array) {
@@ -51,29 +57,25 @@ var DataSetsPanel = React.createClass({
 				</a>
 			);
 		}
-
+		
 		var links=(
 			<div className="pull-right">
-					{ linkPrevious }
-					{ linkNext }
-				 <a href="#" onClick={this.addDataset} className="btn-add" title="Ajouter un jdd">
+				{this.state.currentPage} / { this.state.pages}
+				{ linkPrevious }
+				{ linkNext }
+				<a href="#" onClick={this.addDataset} className="btn-add" title="Ajouter un jdd">
 					<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
 				</a>
 			</div>
 		);
 	
-		
 		return (
-			<Panel title="DataSets" links={links}>
-				<div className="table">
-					<td>
-						<table className="table table-condensed table-hover">
-							<tbody>
-								{datasets}
-							</tbody>
-						</table>
-					</td>
-				</div>
+			<Panel title="DataSets" links={links} search={this.handleSearch}>
+					<table className="table table-condensed table-hover">
+						<tbody>
+							{datasets}
+						</tbody>
+					</table>
 			</Panel>
 		);
   }

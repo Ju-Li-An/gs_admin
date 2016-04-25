@@ -24,11 +24,16 @@ var TPsPanel = React.createClass({
 	},
 
 	render: function() {
+		var title="Transfert(s) - key: ";
+		
+		// Peut être optimisé en inversant la recherche des clés.
 		var tps = this.state.tps.map(function(tp,index,array) {
+			
 			var tpKey=0;
 			for(var idKey in this.state.keys){
 				if(this.state.keys[idKey].name == tp.name){
 					tpKey=1;
+					title+=tp.name+".";
 					break;
 				}
 			}
@@ -38,13 +43,15 @@ var TPsPanel = React.createClass({
 		},this);
 	
 		var links=(
-			<a href="#" onClick={this.addTp} className="pull-right btn-add" title="Ajouter une Transfert Property">
-				<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
-			</a>
+			<div className="pull-right">
+					<a href="#" onClick={this.addTp} className="pull-right btn-add" title="Ajouter une Transfert Property">
+						<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
+					</a>
+			</div>
 		);
 		
 		return (
-			<Panel title="Transfert(s)" links={links}>
+			<Panel title={title} links={links}>
 				<table className="table table-condensed table-hover">
 					<tbody>
 						{tps}

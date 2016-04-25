@@ -21,6 +21,7 @@ var DataSet = React.createClass({
 		
 		if(this.props.selected){
 			ligneActive+=" line-selected";
+			selectable="";
 		}
 		
 		return (

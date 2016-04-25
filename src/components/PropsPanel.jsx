@@ -30,10 +30,13 @@ var PropsPanel = React.createClass({
 	render: function() {
 		
 		var links=(
-			<a href="#" className="pull-right btn-add" title="Editer les propriétés">
-				<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
-			</a>
+			<div className="pull-right">
+					<a href="#" className="pull-right btn-add" title="Editer les propriétés">
+						<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
+					</a>
+				</div>
 		);
+		
 		
 		var regExps = this.state.regExpKeys.map((regExpKey,index,array)=>{
 			return(
@@ -45,16 +48,19 @@ var PropsPanel = React.createClass({
 			);
 		});
 		
+		
 		return (
 			<Panel title="Propriétés / Règles" links={links}>
-					<div><strong>Response Type: </strong>{this.state.responseType}</div>
-					<div><strong>Delay: </strong>{this.state.delay} ms</div>
-					<div><strong>Error Template: </strong>{this.state.errorTemplate}</div>
-					<table className="table table-condensed">
-						<tbody>
-							{regExps}
-						</tbody>
-					</table>
+					<div>
+						<div><strong>Response Type: </strong>{this.state.responseType}</div>
+						<div><strong>Delay: </strong>{this.state.delay} ms</div>
+						<div><strong>Error Template: </strong>{this.state.errorTemplate}</div>
+						<table className="table table-condensed">
+							<tbody>
+								{regExps}
+							</tbody>
+						</table>
+					</div>
 			</Panel>
 		);
     }

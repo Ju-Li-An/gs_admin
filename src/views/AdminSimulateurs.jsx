@@ -43,13 +43,13 @@ var AdminSimulateurs = React.createClass({
 				</div>
 				
 				<div className="row">
-					<div className="col-lg-3">
+					<div className="col-lg-4">
 						<DataSetsPanel/>
 					</div>
 					<div className="col-lg-3">
 						<DataSetDetailsPanel/>
 					</div>
-					<div className="col-lg-6">
+					<div className="col-lg-5">
 						<TemplatePanel/>
 					</div>
 				</div>

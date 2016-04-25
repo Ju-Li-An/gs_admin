@@ -35,24 +35,22 @@ var DataSetDetailsPanel = React.createClass({
 		}
 
 		var links=(
-			<a href="#" onClick={this.addDataset} className="pull-right btn-add" title="Ajouter un jdd">
-				<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
-			</a>
+			<div className="pull-right">
+					<a href="#" onClick={this.addDataset} className="pull-right btn-add" title="Ajouter un jdd">
+						<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
+					</a>
+				</div>
 		);
 		
 		var title="Detail - "+this.state.dataset.value;
 		
 		return (
 			<Panel title={title} links={links}>
-				<div className="table">
-					<td>
-						<table className="table table-condensed table-hover">
-							<tbody>
-								{parameters}
-							</tbody>
-						</table>
-					</td>
-				</div>
+				<table className="table table-condensed table-hover">
+					<tbody>
+						{parameters}
+					</tbody>
+				</table>
 			</Panel>
 		);
   }
