@@ -1,5 +1,7 @@
 var React = require('react');
 var Actions = require('../actions/Actions.js');
+var ButtonDelete =  require('./basic/ButtonDelete.jsx');
+
 
 var Service = React.createClass({
 	
@@ -12,6 +14,10 @@ var Service = React.createClass({
 	remove(event){
 		event.preventDefault();
 	},
+	
+	//componentDidMount:function(){
+	//		$(this.refs.tooltiped).tooltip();
+	//},
 	
 	render: function() {
 		const service=this.props.service;
@@ -28,12 +34,11 @@ var Service = React.createClass({
 			selectable="";
 		}
 		
-		
 		return (
 				<tr className={ligneActive} onClick={selectable}> 
 					<th scope="row">{service.basepath}</th> 
 					<td>
-						<button className="btn-glyph-only btn-remove btn-xs pull-right" onClick={this.remove}><span className="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+						<ButtonDelete handleClick={this.remove}/>
 					</td> 
 				</tr>
 			 );

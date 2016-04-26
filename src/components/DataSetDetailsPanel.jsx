@@ -3,6 +3,8 @@ var Reflux = require('reflux');
 var Actions = require('../actions/Actions.js');
 var DataSetsStore = require('../stores/DataSetsStore.js');
 var Panel = require('./Panel.jsx');
+var Button = require('react-bootstrap').Button;
+var Glyphicon = require('react-bootstrap').Glyphicon;
 
 var DataSetDetailsPanel = React.createClass({
 	mixins: [
@@ -18,7 +20,11 @@ var DataSetDetailsPanel = React.createClass({
 		this.setState({dataset:data.selected.dataset,parametres:data.selected.parametres});
 	},
 
-
+	//TODO
+	addDataset(event){
+		event.preventDefault();
+	},
+	
 	render: function() {
 		
 		var obj = this.state.parametres;
@@ -36,9 +42,7 @@ var DataSetDetailsPanel = React.createClass({
 
 		var links=(
 			<div className="pull-right">
-					<a href="#" onClick={this.addDataset} className="pull-right btn-add" title="Ajouter un jdd">
-						<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
-					</a>
+					<Button href="#" bsStyle="add" bsSize="xsmall" onClick={this.addDataset}><Glyphicon glyph="plus" /></Button>
 				</div>
 		);
 		

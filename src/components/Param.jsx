@@ -1,5 +1,6 @@
 var React = require('react');
 var Actions = require('../actions/Actions.js');
+var ButtonDelete =  require('./basic/ButtonDelete.jsx');
 
 var Param = React.createClass({
 	
@@ -15,7 +16,7 @@ var Param = React.createClass({
 					<th scope="row">{param.name}</th> 
 					<td>{param.type}</td>
 					<td>
-						<a href="#" onClick={this.remove} className="btn-remove pull-right"><span className="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+						<ButtonDelete handleClick={this.remove}/>
 					</td> 
 				</tr>
 			 );

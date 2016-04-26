@@ -4,6 +4,8 @@ var Actions = require('../actions/Actions.js');
 var DataSetsStore = require('../stores/DataSetsStore.js');
 var DataSet = require('./DataSet.jsx');
 var Panel = require('./Panel.jsx');
+var Button = require('react-bootstrap').Button;
+var Glyphicon = require('react-bootstrap').Glyphicon;
 
 var DataSetsPanel = React.createClass({
 	mixins: [
@@ -19,14 +21,20 @@ var DataSetsPanel = React.createClass({
 		this.setState({datasets: data.datasets, selected: data.selected, pages:data.pages, currentPage:data.currentPage,filter:data.filter});
 	},
 	
-	next:function(){
+	next:function(event){
+		event.preventDefault();
 		Actions.refreshDatasetsList(this.state.currentPage+1);
 	},
 	
-	previous:function(){
+	previous:function(event){
+		event.preventDefault();
 		Actions.refreshDatasetsList(this.state.currentPage-1);
 	},
 	
+	//TODO
+	addDataset(event){
+		event.preventDefault();
+	},
 	
 	handleSearch:function(filter){
 		Actions.changeDataSetFilter(filter);
@@ -43,18 +51,14 @@ var DataSetsPanel = React.createClass({
 		var linkPrevious;
 		if(this.state.currentPage!=1){
 			linkPrevious=(
-					<a href="#" onClick={this.previous} className="btn-add" title="Précédent">
-						<span className="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
-					</a>
+					<Button href="#" bsStyle="add" bsSize="xsmall" onClick={this.previous}><Glyphicon glyph="menu-left" /></Button>
 				);
 		}
 		
 		var linkNext;
 		if(this.state.currentPage!=this.state.pages){
 			linkNext=(
-				<a href="#" onClick={this.next} className="btn-add" title="Suivant">
-						<span className="glyphicon glyphicon-menu-right" aria-hidden="true"></span>
-				</a>
+				<Button href="#" bsStyle="add" bsSize="xsmall" onClick={this.next}><Glyphicon glyph="menu-right" /></Button>
 			);
 		}
 		
@@ -63,9 +67,7 @@ var DataSetsPanel = React.createClass({
 				{this.state.currentPage} / { this.state.pages}
 				{ linkPrevious }
 				{ linkNext }
-				<a href="#" onClick={this.addDataset} className="btn-add" title="Ajouter un jdd">
-					<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
-				</a>
+				<Button href="#" bsStyle="add" bsSize="xsmall" onClick={this.addDataset}><Glyphicon glyph="plus" /></Button>
 			</div>
 		);
 	

@@ -269,18 +269,18 @@
 
   Validator.prototype.onSubmit = function (e) {
     this.validate()
-    if (this.isIncomplete() || this.hasErrors()) e.preventDefault()
+    if (this.isIncomplete() || this.hasErrors()){
+			e.preventDefault();
+		}
   }
 
   Validator.prototype.toggleSubmit = function () {
     if (!this.options.disable) return
 		if(this.isIncomplete() || this.hasErrors()){
-			if(!this.$btn.hasClass('disabled')){
-				this.$btn.addClass('disabled');
-			}
-		}else{
-			this.$btn.removeClass('disabled');
-		}
+   this.$btn.prop('disabled',true);
+}else{
+    this.$btn.prop('disabled',false);
+}
     //this.$btn.toggleClass('disabled', this.isIncomplete() || this.hasErrors())
   }
 
@@ -317,7 +317,7 @@
         .html(originalContent)
     })
 
-    this.$element.find('input[type="submit"], button[type="submit"]').removeClass('disabled')
+    this.$element.find('input[type="submit"], button[type="submit"]').removeAttribute('disabled')
 
     this.$element.find('.has-error, .has-danger').removeClass('has-error has-danger')
 

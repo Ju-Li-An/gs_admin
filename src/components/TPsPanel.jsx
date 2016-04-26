@@ -4,6 +4,8 @@ var Actions = require('../actions/Actions.js');
 var ApisStore = require('../stores/ApisStore.js');
 var TP = require('./TP.jsx');
 var Panel = require('./Panel.jsx');
+var Button = require('react-bootstrap').Button;
+var Glyphicon = require('react-bootstrap').Glyphicon;
 
 var TPsPanel = React.createClass({
 	mixins: [
@@ -19,8 +21,9 @@ var TPsPanel = React.createClass({
 		this.setState({tps: data.selected.transferProperties,keys:data.selected.keys});
 	},
 	
-	addTp:function(){
-	
+	//TODO
+	addTp:function(event){
+		event.preventDefault();
 	},
 
 	render: function() {
@@ -44,9 +47,7 @@ var TPsPanel = React.createClass({
 	
 		var links=(
 			<div className="pull-right">
-					<a href="#" onClick={this.addTp} className="pull-right btn-add" title="Ajouter une Transfert Property">
-						<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
-					</a>
+					<Button href="#" bsStyle="add" bsSize="xsmall" onClick={this.addTp}><Glyphicon glyph="plus" /></Button>
 			</div>
 		);
 		

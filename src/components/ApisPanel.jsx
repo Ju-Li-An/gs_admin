@@ -4,6 +4,8 @@ var Actions = require('../actions/Actions.js');
 var ApisStore = require('../stores/ApisStore.js');
 var Api = require('./Api.jsx');
 var Panel = require('./Panel.jsx');
+var Button = require('react-bootstrap').Button;
+var Glyphicon = require('react-bootstrap').Glyphicon;
 
 var ApisPanel = React.createClass({
 	mixins: [
@@ -18,7 +20,13 @@ var ApisPanel = React.createClass({
 	onStoreUpdate(data){
 		this.setState({apis: data.apis,selected:data.selected});
 	},
-
+	
+	
+	//TODO
+	addApi(event){
+		event.preventDefault();
+	},
+	
 
 	render: function() {
 		var apis = this.state.apis.map(function(api,index,array) {
@@ -29,12 +37,9 @@ var ApisPanel = React.createClass({
 	
 		var links=(
 			<div className="pull-right">
-					<a href="#" onClick={this.addApi} className="pull-right btn-add" title="Ajouter une API / Opération">
-						<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
-					</a>
+					<Button href="#" bsStyle="add" bsSize="xsmall" onClick={this.addApi}><Glyphicon glyph="plus" /></Button>
 			</div>
 		);
-		
 		
 		return (
 			<Panel title="Apis / Opérations" links={links}>

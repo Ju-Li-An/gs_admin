@@ -5,8 +5,8 @@ module.exports = function(grunt) {
             options: {
                 debug: true,
                 extensions: ['.jsx'],
-				transform: [['babelify', {presets: ['es2015', 'react']}]],
-				external: ['react','reflux','react-router','react-dom']
+								transform: [['babelify', {presets: ['es2015', 'react']}]],
+								external: ['react','reflux','react-router','react-dom','react-bootstrap']
             },
             gs_admin: {
                 src: 'src/render.js',

@@ -4,6 +4,8 @@ var Actions = require('../actions/Actions.js');
 var ApisStore = require('../stores/ApisStore.js');
 var Param = require('./Param.jsx');
 var Panel = require('./Panel.jsx');
+var Button = require('react-bootstrap').Button;
+var Glyphicon = require('react-bootstrap').Glyphicon;
 
 var ParamsPanel = React.createClass({
 	mixins: [
@@ -19,8 +21,9 @@ var ParamsPanel = React.createClass({
 		this.setState({params: data.selected.parameters});
 	},
 	
-	addParam:function(){
-	
+	//TODO
+	addParam:function(event){
+		event.preventDefault();
 	},
 
 	render: function() {
@@ -32,10 +35,8 @@ var ParamsPanel = React.createClass({
 		
 		var links=(
 			<div className="pull-right">
-					<a href="#" onClick={this.addParam} className="pull-right btn-add" title="Ajouter un paramètre">
-						<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
-					</a>
-				</div>
+				<Button href="#" bsStyle="add" bsSize="xsmall" onClick={this.addParam}><Glyphicon glyph="plus" /></Button>
+			</div>
 		);
 		
 		

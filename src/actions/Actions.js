@@ -6,6 +6,7 @@ var Actions = Reflux.createActions([
   "refreshServicesList",
 	"selectService",
 	"changeServiceFilter",
+	"submitService",
 	
 	
 	// API ACTIONS

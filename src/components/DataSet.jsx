@@ -1,5 +1,6 @@
 var React = require('react');
 var Actions = require('../actions/Actions.js');
+var ButtonDelete = require('./basic/ButtonDelete.jsx');
 
 var DataSet = React.createClass({
 	
@@ -28,7 +29,7 @@ var DataSet = React.createClass({
 				<tr className={ligneActive} onClick={selectable}> 
 					<th scope="row">{dataset.value}</th> 
 					<td>
-						<a href="#" onClick={this.remove} className="btn-remove pull-right"><span className="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+						<ButtonDelete handleClick={this.remove}/>
 					</td> 
 				</tr>
 			 );

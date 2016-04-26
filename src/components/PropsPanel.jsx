@@ -3,6 +3,8 @@ var Reflux = require('reflux');
 var Actions = require('../actions/Actions.js');
 var ApisStore = require('../stores/ApisStore.js');
 var Panel = require('./Panel.jsx');
+var Button = require('react-bootstrap').Button;
+var Glyphicon = require('react-bootstrap').Glyphicon;
 
 var PropsPanel = React.createClass({
 	mixins: [
@@ -26,14 +28,17 @@ var PropsPanel = React.createClass({
 				regExpKeys:data.selected.regExpKeys
 			});
 	},
+	
+	//TODO
+	add(event){
+		event.preventDefault();
+	},
 
 	render: function() {
 		
 		var links=(
 			<div className="pull-right">
-					<a href="#" className="pull-right btn-add" title="Editer les propriétés">
-						<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
-					</a>
+					<Button href="#" bsStyle="add" bsSize="xsmall" onClick={this.add}><Glyphicon glyph="plus" /></Button>
 				</div>
 		);
 		

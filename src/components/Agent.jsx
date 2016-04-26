@@ -1,5 +1,6 @@
 var React = require('react');
 var Actions = require('../actions/Actions.js');
+var ButtonDelete = require('./basic/ButtonDelete.jsx');
 
 var Agent = React.createClass({
 	
@@ -34,7 +35,7 @@ var Agent = React.createClass({
 					<td>{agent.hostname}</td> 
 					<td>{agent.port}</td> 
 					<td>
-						<a href="#" onClick={this.remove} className="btn-remove pull-right"><span className="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+						<ButtonDelete handleClick={this.remove}/>
 					</td> 
 				</tr>
 			 );

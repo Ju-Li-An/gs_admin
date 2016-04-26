@@ -1,5 +1,6 @@
 var React = require('react');
 var Actions = require('../actions/Actions.js');
+var ButtonDelete = require('./basic/ButtonDelete.jsx');
 
 var TP = React.createClass({
 	
@@ -21,7 +22,7 @@ var TP = React.createClass({
 							<td>{tp.path}</td>
 						) : (<td></td>)}
 					<td>
-						<a href="#" onClick={this.remove} className="btn-remove pull-right"><span className="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+						<ButtonDelete handleClick={this.remove}/>
 					</td> 
 				</tr>
 			 );

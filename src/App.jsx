@@ -4,7 +4,8 @@ var Router = require('react-router').Router;
 var Route = require('react-router').Route;
 var Link = require('react-router').Link;
 var Reflux = require('reflux');
-
+var Button = require('react-bootstrap').Button;
+var Glyphicon = require('react-bootstrap').Glyphicon;
 
 var App = React.createClass({
 
@@ -39,7 +40,7 @@ var App = React.createClass({
 						<li><a href="#">Aide</a></li>
 					</ul>
 				</div>
-				<a href="#" id="menu-toggle" onClick={this.toggleMenu} className="glyphicon glyphicon-menu-hamburger"></a>
+				<Button href="#" id="menu-toggle" bsStyle="add" bsSize="xsmall" onClick={this.toggleMenu}><Glyphicon glyph="menu-hamburger" /></Button>
 				<div id="page-content-wrapper">
 					{ this.props.children } 
 				</div>

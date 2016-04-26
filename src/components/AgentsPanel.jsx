@@ -4,6 +4,9 @@ var Actions = require('../actions/Actions.js');
 var AgentsStore = require('../stores/AgentsStore.js');
 var Agent = require('./Agent.jsx');
 var Panel =  require('./Panel.jsx');
+var Button = require('react-bootstrap').Button;
+var Glyphicon = require('react-bootstrap').Glyphicon;
+
 
 var AgentsPanel = React.createClass({
 	mixins: [
@@ -19,10 +22,12 @@ var AgentsPanel = React.createClass({
 		this.setState({agents: data.agents,selected:data.selected} );
 	},
 	
-	addAgent(){
+	addAgent(event){
+		event.preventDefault();
 	},
 	
-	refreshList(){
+	refreshList(event){
+		event.preventDefault();
 		Actions.refreshAgentList();
 	},
 	
@@ -35,13 +40,8 @@ var AgentsPanel = React.createClass({
 		
 		var links=(
 			<div className="pull-right">
-				<a href="#" onClick={this.refreshList} className="btn-add" title="Actualiser la liste">
-					<span className="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-				</a>
-
-				<a href="#" onClick={this.addAgent} className="btn-add" title="Ajouter un agent">
-					<span className="glyphicon glyphicon-plus" aria-hidden="true"></span>
-				</a>
+				<Button href="#" bsStyle="add" bsSize="xsmall" onClick={this.refreshList}><Glyphicon glyph="refresh" /></Button>
+				<Button href="#" bsStyle="add" bsSize="xsmall" onClick={this.addAgent}><Glyphicon glyph="plus" /></Button>
 			</div>
 		);
 		
