@@ -18,7 +18,10 @@ var TPsPanel = React.createClass({
 	},
 	
 	onStoreUpdate(data){
-		this.setState({tps: data.selected.transferProperties,keys:data.selected.keys});
+		if(data.selected===-1)
+			this.setState({tps: [],keys:[]});
+		else
+			this.setState({tps: data.selected.transferProperties,keys:data.selected.keys});
 	},
 	
 	//TODO

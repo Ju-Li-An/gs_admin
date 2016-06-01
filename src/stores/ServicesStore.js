@@ -24,6 +24,8 @@ var ServicesStore = Reflux.createStore({
 	//En cas de changement sur les données des agents
 	onAgentsStoreChange:function (storeData){
 		if(storeData.selected===-1){
+			this.initData();
+			this.trigger(data);
 			return;
 		}
 		data.agent = storeData.selected;
@@ -93,6 +95,13 @@ var ServicesStore = Reflux.createStore({
 			success: (result) => {
 			
 				data.currentPage=pageNum;
+			
+				if(result.totalSize==0){
+					data.pages=1;
+					this.trigger(data);
+					return;
+				}
+
 				data.pages=Math.ceil(result.totalSize/servicesPerPage);
 			
 				// Pour chaque service, récupération de sa configuration
@@ -127,11 +136,37 @@ var ServicesStore = Reflux.createStore({
 			Actions.disableAgent(this);
 		});
 	},
+
+	onDeleteService:function(service){
+
+		var agentUrl='http://'+data.agent.hostname+':'+data.agent.port;
+
+		$.ajax({
+			url: `${agentUrl}/${service}`,
+			type: "DELETE",
+			dataType: "text",
+			success: (result) => {
+				this.onRefreshServicesList(1);
+			}
+		});
+
+	},
 	
 	// Change le service sélectionné
 	onSelectService:function(service){
 		data.selected=service;
 		this.trigger(data);
+	},
+
+	initData: function(){
+		data = {
+			services:[],
+			agent:{},
+			selected:-1,
+			currentPage:1,
+			filter:'',
+			pages:1
+		};
 	},
 	
 	getDefaultData(){

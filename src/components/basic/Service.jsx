@@ -13,6 +13,7 @@ var Service = React.createClass({
 	
 	remove(event){
 		event.preventDefault();
+		Actions.deleteService(this.props.service.basepath);
 	},
 	
 	//componentDidMount:function(){

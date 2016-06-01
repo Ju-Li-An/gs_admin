@@ -32,9 +32,6 @@ var ServicesPanel = React.createClass({
 		Actions.refreshServicesList(this.state.currentPage-1);
 	},
 	
-	addService:function(){
-
-	},
 	
 	handleSearch:function(filter){
 		Actions.changeServiceFilter(filter);

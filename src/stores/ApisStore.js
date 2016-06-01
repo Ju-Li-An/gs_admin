@@ -19,6 +19,8 @@ var ApisStore = Reflux.createStore({
 	
 	onServicesStoreChange:function (storeData){
 		if(storeData.selected===-1){
+			this.initData();
+			this.trigger(data);
 			return;
 		}
 		var service = storeData.selected;
@@ -48,8 +50,19 @@ var ApisStore = Reflux.createStore({
 		data.selected=api;
 		this.trigger(data);
 	},
+
+	initData:function(){
+		data = {
+			currentService:'',
+			apis:[],
+			agent:{},
+			selected:-1,
+			currentPage:1,
+		};
+	},
 	
 	getDefaultData(){
+		
 		return data;
 	}
 });

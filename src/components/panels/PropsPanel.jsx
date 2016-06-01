@@ -21,12 +21,20 @@ var PropsPanel = React.createClass({
 	},
 	
 	onStoreUpdate(data){
-		this.setState({
-				responseType: data.selected.responseType,
-				delay:data.selected.delay,
-				errorTemplate:data.selected.errorTemplate,
-				regExpKeys:data.selected.regExpKeys
+		if(data.selected===-1)
+			this.setState({
+				responseType: '',
+				delay:0,
+				errorTemplate:'',
+				regExpKeys:[]
 			});
+		else
+			this.setState({
+					responseType: data.selected.responseType,
+					delay:data.selected.delay,
+					errorTemplate:data.selected.errorTemplate,
+					regExpKeys:data.selected.regExpKeys
+				});
 	},
 	
 	//TODO

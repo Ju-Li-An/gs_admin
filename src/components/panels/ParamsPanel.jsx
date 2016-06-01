@@ -13,12 +13,14 @@ var ParamsPanel = React.createClass({
 	],
 	
 	getInitialState: function() {
-		var data = ApisStore.getDefaultData();
 		return {params: []};
 	},
 	
 	onStoreUpdate(data){
-		this.setState({params: data.selected.parameters});
+		if(data.selected===-1)
+			this.setState({params: []});
+		else
+			this.setState({params: data.selected.parameters});
 	},
 	
 	//TODO

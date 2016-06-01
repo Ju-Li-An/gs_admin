@@ -25,6 +25,8 @@ var DataSetsStore = Reflux.createStore({
 	
 	onApisStoreChange:function (storeData){
 		if(storeData.selected===-1){
+			this.initData();
+			this.trigger(data);
 			return;
 		}
 		data.agent = storeData.agent;
@@ -118,7 +120,22 @@ var DataSetsStore = Reflux.createStore({
 		});
 	},
 	
+	initData: function(){
+		data = {
+			datasets:[],
+			currentService:'',
+			filter:'',
+			currentApi:'',
+			currentOpe:'',
+			agent:{},
+			selected:{dataset:{}, parametres:{}, template:{}},
+			currentPage:1,
+			pages:1
+		};
+	},
+	
 	getDefaultData(){
+		
 		return data;
 	}
 });
