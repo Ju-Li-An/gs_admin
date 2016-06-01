@@ -1,13 +1,13 @@
 var React = require('react');
-var AgentsPanel = require('../components/AgentsPanel.jsx');
-var ServicesPanel = require('../components/ServicesPanel.jsx');
-var ApisPanel = require('../components/ApisPanel.jsx');
-var TPsPanel = require('../components/TPsPanel.jsx');
-var ParamsPanel = require('../components/ParamsPanel.jsx');
-var PropsPanel = require('../components/PropsPanel.jsx');
-var DataSetsPanel = require('../components/DataSetsPanel.jsx');
-var DataSetDetailsPanel = require('../components/DataSetDetailsPanel.jsx');
-var TemplatePanel = require('../components/TemplatePanel.jsx');
+var AgentsPanel = require('../components/panels/AgentsPanel.jsx');
+var ServicesPanel = require('../components/panels/ServicesPanel.jsx');
+var ApisPanel = require('../components/panels/ApisPanel.jsx');
+var TPsPanel = require('../components/panels/TPsPanel.jsx');
+var ParamsPanel = require('../components/panels/ParamsPanel.jsx');
+var PropsPanel = require('../components/panels/PropsPanel.jsx');
+var DataSetsPanel = require('../components/panels/DataSetsPanel.jsx');
+var DataSetDetailsPanel = require('../components/panels/DataSetDetailsPanel.jsx');
+var TemplatePanel = require('../components/panels/TemplatePanel.jsx');
 
 var AdminSimulateurs = React.createClass({
 

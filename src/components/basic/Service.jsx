@@ -1,6 +1,6 @@
 var React = require('react');
-var Actions = require('../actions/Actions.js');
-var ButtonDelete =  require('./basic/ButtonDelete.jsx');
+var Actions = require('../../actions/Actions.js');
+var ButtonDelete =  require('./ButtonDelete.jsx');
 
 
 var Service = React.createClass({
@@ -22,7 +22,6 @@ var Service = React.createClass({
 	render: function() {
 		const service=this.props.service;
 		
-		var changeStatus;
 		var ligneActive="";
 		var selectable=this.select;
 		

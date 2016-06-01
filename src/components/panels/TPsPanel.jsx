@@ -1,8 +1,8 @@
 var React = require('react');
 var Reflux = require('reflux');
-var Actions = require('../actions/Actions.js');
-var ApisStore = require('../stores/ApisStore.js');
-var TP = require('./TP.jsx');
+var Actions = require('../../actions/Actions.js');
+var ApisStore = require('../../stores/ApisStore.js');
+var TP = require('../basic/TP.jsx');
 var Panel = require('./Panel.jsx');
 var Button = require('react-bootstrap').Button;
 var Glyphicon = require('react-bootstrap').Glyphicon;
@@ -33,10 +33,18 @@ var TPsPanel = React.createClass({
 		var tps = this.state.tps.map(function(tp,index,array) {
 			
 			var tpKey=0;
+			/*if(this.state.keys.includes(tp.name)){
+				if(title.length>0)
+					title+='.'
+				tpKey=1;
+				title+=tp.name;
+			}*/
 			for(var idKey in this.state.keys){
-				if(this.state.keys[idKey].name == tp.name){
+				if(this.state.keys[idKey] == tp.name){
+					if(title.length>0)
+						title+='.'
 					tpKey=1;
-					title+=tp.name+".";
+					title+=tp.name;
 					break;
 				}
 			}

@@ -1,14 +1,14 @@
 var React = require('react');
 var Reflux = require('reflux');
-var Actions = require('../actions/Actions.js');
-var ServicesStore = require('../stores/ServicesStore.js');
-var Service = require('./Service.jsx');
+var Actions = require('../../actions/Actions.js');
+var ServicesStore = require('../../stores/ServicesStore.js');
+var Service = require('../basic/Service.jsx');
 var Panel = require('./Panel.jsx');
 //var Modal = require('./Modal.jsx');
-var ServiceEditor = require('./ServiceEditor.jsx');
+var ServiceEditor = require('../editors/ServiceEditor.jsx');
 var Button = require('react-bootstrap').Button;
 var Glyphicon = require('react-bootstrap').Glyphicon;
-var Modal = require('react-bootstrap').Modal;
+
 
 var ServicesPanel = React.createClass({
 	mixins: [
@@ -17,11 +17,11 @@ var ServicesPanel = React.createClass({
 	
 	getInitialState: function() {
 		var data = ServicesStore.getDefaultData();
-		return {services: data.services, selected: data.selected, pages:data.pages, currentPage:data.currentPage,filter:data.filter,showModal: false};
+		return {services: data.services, selected: data.selected, pages:data.pages, currentPage:data.currentPage,filter:data.filter,showEditor: false, agent:data.agent};
 	},
 	
-	onStoreUpdate(data){
-		this.setState({services: data.services,selected:data.selected, pages:data.pages, currentPage:data.currentPage,filter:data.filter});
+	onStoreUpdate: function(data){
+		this.setState({services: data.services,selected:data.selected, pages:data.pages, currentPage:data.currentPage,filter:data.filter, agent:data.agent});
 	},
 	
 	next:function(){
@@ -40,13 +40,14 @@ var ServicesPanel = React.createClass({
 		Actions.changeServiceFilter(filter);
 	},
 	
-	openEditor() {
-    this.setState({ showModal: true });
-  },
+	openEditor: function() {
+		Actions.createService(this.state.agent);
+    	this.setState({ showEditor: true });
+  	},
 
-	closeEditor() {
-    this.setState({ showModal: false });
-  },
+	closeEditor: function() {
+    	this.setState({ showEditor: false });
+  	},
 	
 	render: function() {
 		var services = this.state.services.map(function(service,index,array) {
@@ -91,21 +92,8 @@ var ServicesPanel = React.createClass({
 							{services}
 						</tbody>
 					</table>
-					
-					<Modal bsSize="lg" show={this.state.showModal} onHide={this.closeEditor}>
-						<Modal.Header closeButton>
-							<Modal.Title>Editeur de service</Modal.Title>
-						</Modal.Header>
-						<Modal.Body>
-							<ServiceEditor/>
-						</Modal.Body>
-						<Modal.Footer>
-							<Button onClick={this.closeEditor}>Close</Button>
-						</Modal.Footer>
-					</Modal>
-					
+					<ServiceEditor show={this.state.showEditor} agent={this.state.agent} onCancel={this.closeEditor} agent={this.state.agent} />
 				</div>
-			
 			</Panel>
 		
 		);

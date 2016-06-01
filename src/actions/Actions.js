@@ -3,11 +3,14 @@ var Reflux = require('reflux');
 var Actions = Reflux.createActions([
 
 	// SERVICES ACTIONS
-  "refreshServicesList",
+  	"refreshServicesList",
 	"selectService",
 	"changeServiceFilter",
 	"submitService",
 	
+	//SERVICE EDITOR
+	"selectStep",
+	"submitStep",
 	
 	// API ACTIONS
 	"selectApi",
@@ -23,7 +26,10 @@ var Actions = Reflux.createActions([
 	// AGENT ACTIONS
 	"selectAgent",
 	"disableAgent",
-	"refreshAgentList"
+	"refreshAgentList",
+
+	// EDITOR SERVICE
+	"createService"
 	
 ]); 
 

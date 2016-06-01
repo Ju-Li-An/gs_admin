@@ -1,50 +1,51 @@
 var React = require('react');
 var Reflux = require('reflux');
-var Actions = require('../actions/Actions.js');
-var ApisStore = require('../stores/ApisStore.js');
-var Param = require('./Param.jsx');
+var Actions = require('../../actions/Actions.js');
+var ApisStore = require('../../stores/ApisStore.js');
+var Api = require('../basic/Api.jsx');
 var Panel = require('./Panel.jsx');
 var Button = require('react-bootstrap').Button;
 var Glyphicon = require('react-bootstrap').Glyphicon;
 
-var ParamsPanel = React.createClass({
+var ApisPanel = React.createClass({
 	mixins: [
 			Reflux.listenTo(ApisStore, 'onStoreUpdate')
 	],
 	
 	getInitialState: function() {
 		var data = ApisStore.getDefaultData();
-		return {params: []};
+		return {apis: data.apis, selected: data.selected};
 	},
 	
 	onStoreUpdate(data){
-		this.setState({params: data.selected.parameters});
+		this.setState({apis: data.apis,selected:data.selected});
 	},
 	
+	
 	//TODO
-	addParam:function(event){
+	addApi(event){
 		event.preventDefault();
 	},
+	
 
 	render: function() {
-		var params = this.state.params.map(function(param,index,array) {
+		var apis = this.state.apis.map(function(api,index,array) {
 			return (
-				<Param param={param} selected=''/>
+				<Api api={api} selected={api.name==this.state.selected.name}/>
 			);
 		},this);
-		
+	
 		var links=(
 			<div className="pull-right">
-				<Button href="#" bsStyle="add" bsSize="xsmall" onClick={this.addParam}><Glyphicon glyph="plus" /></Button>
+					<Button href="#" bsStyle="add" bsSize="xsmall" onClick={this.addApi}><Glyphicon glyph="plus" /></Button>
 			</div>
 		);
 		
-		
 		return (
-			<Panel title="Paramètre(s)" links={links}>
+			<Panel title="Apis / Opérations" links={links}>
 				<table className="table table-condensed table-hover">
 					<tbody>
-						{params}
+						{apis}
 					</tbody>
 				</table>
 			</Panel>
@@ -52,4 +53,4 @@ var ParamsPanel = React.createClass({
     }
 });
 
-module.exports = ParamsPanel;
+module.exports = ApisPanel;

@@ -1,6 +1,6 @@
 var React = require('react');
-var Actions = require('../actions/Actions.js');
-var ButtonDelete = require('./basic/ButtonDelete.jsx');
+var Actions = require('../../actions/Actions.js');
+var ButtonDelete = require('./ButtonDelete.jsx');
 
 var Agent = React.createClass({
 	

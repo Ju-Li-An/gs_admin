@@ -1,6 +1,7 @@
 ﻿var Reflux = require('reflux');
 var Actions= require('../actions/Actions.js');
 var AgentsStore = require('./AgentsStore.js');
+var SrvService = require('../services/SrvService.js');
 
 let servicesPerPage = 10;
 
@@ -32,7 +33,7 @@ var ServicesStore = Reflux.createStore({
 			return;
 		}
 		
-		// Rafrachissement de la liste des services après changement de l'agent
+		// Rafraichissement de la liste des services après changement de l'agent
 		this.onRefreshServicesList(1);
 		
 	},
@@ -45,11 +46,43 @@ var ServicesStore = Reflux.createStore({
 	},
 	
 	onRefreshServicesList:function(pageNum){
+		
 		data.services=[];
 		data.selected=-1;
 		var count=0;
 		
 		var agentUrl='http://'+data.agent.hostname+':'+data.agent.port;
+
+		/*SrvService.list(data.agent,pageNum,servicesPerPage,data.filter,(err,srvList)=>{
+			if(err){
+				Actions.disableAgent(this);
+				return;
+			}
+
+			data.currentPage=pageNum;
+			data.pages=Math.ceil(srvList.totalSize/servicesPerPage);
+
+			srvList.page.forEach((res,index,array) => {
+				SrvService.get(agentUrl,res.value,(err,srvData)=>{
+					var id=count++;
+					if(srvData.state=='running'){
+						srvData.status=1;
+						if(data.selected==-1)
+							data.selected=srvData;
+					}
+					else{
+						srvData.status=0;
+					}
+					data.services.push(srvData);
+					
+					// Lorsqu'on a terminé la liste
+					if(id==array.length-1){
+						this.trigger(data);
+					}
+				});
+			});
+		});*/
+
 
 		// Récupération de la liste des Services
 		$.ajax({

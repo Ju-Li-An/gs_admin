@@ -1,12 +1,12 @@
 var React = require('react');
-var Actions = require('../actions/Actions.js');
-var ButtonDelete = require('./basic/ButtonDelete.jsx');
+var Actions = require('../../actions/Actions.js');
+var ButtonDelete = require('./ButtonDelete.jsx');
 
-var Api = React.createClass({
+var DataSet = React.createClass({
 	
 	select(event){
 		if(!event.isDefaultPrevented()){
-			Actions.selectApi(this.props.api);
+			Actions.selectDataset(this.props.dataset);
 		}
 	},
 	
@@ -15,19 +15,19 @@ var Api = React.createClass({
 	},
 	
 	render: function() {
-		const api=this.props.api;
+		const dataset=this.props.dataset;
 		
 		var ligneActive="";
 		var selectable=this.select;
 		
 		if(this.props.selected){
 			ligneActive+=" line-selected";
+			selectable="";
 		}
 		
 		return (
 				<tr className={ligneActive} onClick={selectable}> 
-					<th scope="row">{api.name}</th> 
-					<td>{api.method} : {api.uri}</td> 
+					<th scope="row">{dataset.value}</th> 
 					<td>
 						<ButtonDelete handleClick={this.remove}/>
 					</td> 
@@ -36,4 +36,4 @@ var Api = React.createClass({
     }
 });
 
-module.exports = Api;
+module.exports = DataSet;

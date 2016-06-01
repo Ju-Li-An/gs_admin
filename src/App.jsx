@@ -18,7 +18,7 @@ var App = React.createClass({
 			menuToggle:""
 		};
 	},
-	
+
   
 	toggleMenu: function(event) {
 		event.preventDefault();

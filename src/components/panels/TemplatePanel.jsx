@@ -3,8 +3,8 @@ var Reflux = require('reflux');
 //var AceEditor = require('react-ace');
 //var hljs = require('./highlight.js');
 
-var Actions = require('../actions/Actions.js');
-var DataSetsStore = require('../stores/DataSetsStore.js');
+var Actions = require('../../actions/Actions.js');
+var DataSetsStore = require('../../stores/DataSetsStore.js');
 var Panel = require('./Panel.jsx');
 
 var TemplatePanel = React.createClass({
@@ -57,7 +57,7 @@ var TemplatePanel = React.createClass({
 		
 		return (
 			<Panel title={title} links={links}>
-					<pre><code className="template">{document}</code></pre>
+				<pre><code className="template">{document}</code></pre>
 			</Panel>
 		);
   }
