@@ -242,6 +242,14 @@ table{
     padding-left: 150px;
 }
 
+#page-content-header{
+  background: #000;
+  height: 24px;
+  margin-left:-15px;
+  margin-right:-15px;
+  margin-bottom:10px;
+}
+
 #sidebar-wrapper {
     z-index: 1000;
     position: fixed;
@@ -266,7 +274,6 @@ table{
     width: 100%;
     position: absolute;
     padding: 15px;
-    
 }
 
 #wrapper.toggled #page-content-wrapper {
