@@ -1,0 +1,7 @@
+{
+	"agents":[{"id":0,"hostname":"localhost","port":"9080","status":1},
+			{"id":1,"hostname":"localhost","port":"9081","status":0},
+			{"id":2,"hostname":"10.44.208.85","port":"9080","status":1},
+			{"id":3,"hostname":"10.44.208.85","port":"9081","status":1},
+			{"id":4,"hostname":"10.44.208.85","port":"9081","status":1}]
+}
