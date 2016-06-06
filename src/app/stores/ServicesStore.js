@@ -48,57 +48,44 @@ var ServicesStore = Reflux.createStore({
 		}
 	},
 
-	changeServiceStatus:function(basepath, status, state){
-		if(data.selected.basepath==basepath){
-			data.selected.status=status;
-			data.selected.state=state;
-		}
-		for(var id in data.services){
-			if(data.services[id].basepath==basepath){
-				data.services[id].status=status;
-				data.services[id].state=state;
-				break;
+	adminService:function(action,basepath){
+		var agentUrl='http://'+data.agent.hostname+':'+data.agent.port;
+
+		$.ajax({
+			url: `${agentUrl}/${action}/${basepath}`,
+			type: "GET",
+			dataType: "text",
+			success: (result) => {
+				var srv = JSON.parse(result);
+		
+				if(data.selected.basepath==srv.basepath){
+					data.selected=srv;
+					data.selected.status=srv.state=='stopped'?0:1;
+				}
+				for(var id in data.services){
+					if(data.services[id].basepath==srv.basepath){
+						data.services[id]=srv;
+						data.services[id].status=srv.state=='stopped'?0:1;
+						break;
+					}
+				}
+
+				this.trigger(data);
+				Actions.notify({title: basepath,message:'Service '+srv.state,level:'success'});
+			},
+			error: (x, t, m) => {
+				this.onRefreshServicesList(1);
+				Actions.notify({title: basepath,message:x.responseText,level:'error'});
 			}
-		}
-		return;
+		});
 	},
 
 	onStopService:function(basepath){
-		var agentUrl='http://'+data.agent.hostname+':'+data.agent.port;
-
-		$.ajax({
-			url: `${agentUrl}/stop/${basepath}`,
-			type: "GET",
-			dataType: "text",
-			success: (result) => {
-				this.changeServiceStatus(basepath,0,'stopped');
-				this.trigger(data);
-				Actions.notify({title: basepath,message:'Service '+result.state,level:'success'});
-			},
-			error: (x, t, m) => {
-				this.onRefreshServicesList(1);
-				Actions.notify({title: basepath,message:x.responseText,level:'error'});
-			}
-		});
+		this.adminService('stop',basepath);
 	},
 
 	onStartService:function(basepath){
-		var agentUrl='http://'+data.agent.hostname+':'+data.agent.port;
-
-		$.ajax({
-			url: `${agentUrl}/start/${basepath}`,
-			type: "GET",
-			dataType: "text",
-			success: (result) => {
-				this.changeServiceStatus(basepath,1,'running');
-				this.trigger(data);
-				Actions.notify({title: basepath, message:'Service '+result.state,level:'success'});
-			},
-			error: (x, t, m) => {
-				this.onRefreshServicesList(1);
-				Actions.notify({title: basepath,message:x.responseText,level:'error'});
-			}
-		});
+		this.adminService('start',basepath);
 	},
 	
 	onRefreshServicesList:function(pageNum){
