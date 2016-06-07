@@ -40,9 +40,6 @@ var App = React.createClass({
 				</div>
 				
 				<div id="page-content-wrapper">
-					<div id="page-content-header">
-						
-					</div>
 					{ this.props.children } 
 				</div>
 			</div>

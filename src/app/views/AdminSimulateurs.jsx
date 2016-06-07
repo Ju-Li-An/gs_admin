@@ -8,8 +8,18 @@ var PropsPanel = require('../components/panels/PropsPanel.jsx');
 var DataSetsPanel = require('../components/panels/DataSetsPanel.jsx');
 var DataSetDetailsPanel = require('../components/panels/DataSetDetailsPanel.jsx');
 var TemplatePanel = require('../components/panels/TemplatePanel.jsx');
+var Editor = require('../components/editors/Editor.jsx');
 var NotifyStore = require('../stores/NotifyStore.js');
 import NotificationSystem from 'react-notification-system';
+var Glyphicon = require('react-bootstrap').Glyphicon;
+
+var style = {
+  Containers: { 
+    DefaultStyle: { 
+      padding: '25px 10px 10px 10px'
+    }
+  }
+}
 
 var AdminSimulateurs = React.createClass({
 	mixins: [
@@ -17,19 +27,35 @@ var AdminSimulateurs = React.createClass({
 	],
 	_notificationSystem: null,
 
-	onStoreUpdate:function(notification){
-		this._notificationSystem.addNotification(notification);	
+	getInitialState: function() {
+		return({history:[]});
+	},
+
+	onStoreUpdate:function(data){
+		this._notificationSystem.addNotification(data.notification);
+
+		this.setState({history:data.history});
+	},
+
+	displayHistory:function(event){
+		event.preventDefault();
 	},
 
 	componentDidMount() {
 		$.ajaxSetup({timeout:1000});
 		this._notificationSystem = this.refs.notificationSystem;
 	},
-	
+
 	render: function() {
+
 		return(
 			<div id="grid">
-				<NotificationSystem ref="notificationSystem" />
+				<div id="page-content-header">
+					<div className="profil pull-right">
+						JuLiAn  <Glyphicon glyph="bell" />{this.state.history.length}
+					</div>	
+				</div>
+				<NotificationSystem ref="notificationSystem" style={style} allowHTML='true'/>
 				<div className="row">
 					<div className="col-lg-3">
 						<AgentsPanel/>
@@ -65,6 +91,9 @@ var AdminSimulateurs = React.createClass({
 						<TemplatePanel/>
 					</div>
 				</div>
+
+				<Editor/>
+				
 			</div>
 		);
 	
