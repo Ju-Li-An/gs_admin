@@ -132,7 +132,7 @@ var ServiceEditorStore = Reflux.createStore({
 		data.currentStep++;
 		data.steps[data.currentStep].active=true;
 		data.steps[data.currentStep].enable=true;
-		console.log("NEXT STEP");
+
 		this.trigger(data);
 	},
 

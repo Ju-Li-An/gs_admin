@@ -71,7 +71,7 @@ var ServicesStore = Reflux.createStore({
 				}
 
 				this.trigger(data);
-				Actions.notify({title: basepath,message:'Service '+srv.state,level:'success'});
+				Actions.notify({title: basepath,message:'Service '+srv.state,level:action=='start'?'success':'warning'});
 			},
 			error: (x, t, m) => {
 				this.onRefreshServicesList(1);

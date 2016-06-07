@@ -1,5 +1,5 @@
 var React = require('react');
-var Actions = require('../../actions/Actions.js');
+var Actions = require('../../../actions/Actions.js');
 var Glyphicon = require('react-bootstrap').Glyphicon;
 
 var Step = React.createClass({

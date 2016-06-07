@@ -37,13 +37,9 @@ var ServicesPanel = React.createClass({
 	},
 	
 	openEditor: function() {
-		Actions.createService(this.state.agent);
-    	this.setState({ showEditor: true });
+		Actions.showEditor('Nouveau Service','serviceEditor');
   	},
 
-	closeEditor: function() {
-    	this.setState({ showEditor: false });
-  	},
 	
 	render: function() {
 
@@ -90,7 +86,6 @@ var ServicesPanel = React.createClass({
 							{services}
 						</tbody>
 					</table>
-					<ServiceEditor show={this.state.showEditor} agent={this.state.agent} onCancel={this.closeEditor} agent={this.state.agent} />
 				</div>
 			</Panel>
 		

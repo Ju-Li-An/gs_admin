@@ -32,7 +32,8 @@ var Actions = Reflux.createActions([
 	"refreshAgentList",
 
 	// EDITOR SERVICE
-	"createService",
+	"showEditor",
+	"closeEditor",
 
 	"notify"
 	

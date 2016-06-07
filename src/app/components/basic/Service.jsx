@@ -4,6 +4,10 @@ var ButtonGS =  require('./ButtonGS.jsx');
 
 
 var Service = React.createClass({
+
+	getInitialState:function(){
+		return({edit:false});
+	},
 	
 	select(event){
 		if(!event.isDefaultPrevented()){
@@ -25,10 +29,12 @@ var Service = React.createClass({
 		event.preventDefault();
 		Actions.deleteService(this.props.service.basepath);
 	},
-	
-	//componentDidMount:function(){
-	//		$(this.refs.tooltiped).tooltip();
-	//},
+
+	edit(event){
+		event.preventDefault();
+		this.setState({edit:true});
+	},
+
 	
 	render: function() {
 		const service=this.props.service;
