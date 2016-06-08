@@ -64,7 +64,7 @@ var ServicesStore = Reflux.createStore({
 				}
 				for(var id in data.services){
 					if(data.services[id].basepath==srv.basepath){
-						data.services[id]=srv;
+						data.services[id].state=srv.state;
 						data.services[id].status=srv.state=='stopped'?0:1;
 						break;
 					}
@@ -153,15 +153,18 @@ var ServicesStore = Reflux.createStore({
 						dataType: "json",
 						success: (srv) => {
 							var id =count++;
+							var service={basepath:srv.basepath,state:srv.state};
 							if(srv.state=='running'){
 								srv.status=1;
-								if(data.selected==-1)
+								if(data.selected==-1){
 									data.selected=srv;
+								}
+								service.status=1;
 							}
 							else{
-								srv.status=0;
+								service.status=0;
 							}
-							data.services.push(srv);
+							data.services.push(service);
 							
 							// Lorsqu'on a terminé la liste
 							if(id==array.length-1){
