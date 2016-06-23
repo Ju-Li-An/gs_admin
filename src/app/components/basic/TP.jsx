@@ -22,6 +22,10 @@ var TP = React.createClass({
 						tp.path ? (
 							<td>{tp.path}</td>
 						) : (<td></td>)}
+					{
+						tp.attr ? (
+							<td>{tp.attr}</td>
+						) : (<td></td>)}
 					<td>
 						<ButtonGS handleClick={this.remove} tooltip='Supprimer' style='remove' glyph='remove'/>
 					</td> 
