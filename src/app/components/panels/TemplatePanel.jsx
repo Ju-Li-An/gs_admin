@@ -48,16 +48,17 @@ var TemplatePanel = React.createClass({
 
 		
 		var content = this.state.content;
-		var document="";
+
+		/*var document="";
 		
 		if(content){
 			document = content.documentElement.outerHTML;
-		}
+		}*/
 		
 		
 		return (
 			<Panel title={title} links={links}>
-				<pre><code className="template">{document}</code></pre>
+				<pre><code className="template">{content}</code></pre>
 			</Panel>
 		);
   }
