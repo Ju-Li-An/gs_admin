@@ -37,7 +37,6 @@ var SE_Step_Service = React.createClass({
 		return data;
 	},
 
-
 	updateState:function(){
 		var formData = this.getFormData();
 		var serviceUri = this.getBasePath(formData);

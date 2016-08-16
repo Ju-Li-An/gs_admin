@@ -10,6 +10,7 @@ var Actions = Reflux.createActions([
 	"deleteService",
 	"startService",
 	"stopService",
+	"editService",
 	
 	//SERVICE EDITOR
 	"selectStep",

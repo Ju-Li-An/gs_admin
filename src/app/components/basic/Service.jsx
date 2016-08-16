@@ -27,12 +27,17 @@ var Service = React.createClass({
 	
 	remove(event){
 		event.preventDefault();
-		Actions.deleteService(this.props.service.basepath);
+		var r = confirm("Etes vous sur de vouloir supprimer le service?");
+		if (r == true) {
+		   Actions.deleteService(this.props.service.basepath);
+		} 
 	},
 
 	edit(event){
 		event.preventDefault();
-		this.setState({edit:true});
+		if(!this.props.selected)
+			Actions.selectService(this.props.service);
+		Actions.showEditor(`Edition du service ${this.props.service.basepath}`,'sm','serviceEditor');
 	},
 
 	
@@ -57,6 +62,7 @@ var Service = React.createClass({
 					<td>
 						<ButtonGS handleClick={this.remove} tooltip='Supprimer' style='remove' glyph='remove'/>
 						<ButtonGS handleClick={service.status?this.stop:this.start} tooltip={service.status?'Stop':'Start'} style='add' glyph={service.status?'stop':'play'}/>
+						<ButtonGS handleClick={this.edit} tooltip='Editer' style='add' glyph='pencil'/>
 					</td> 
 				</tr>
 			 );

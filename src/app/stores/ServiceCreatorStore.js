@@ -13,7 +13,7 @@ let data = {
 	currentStep:0
 };
 
-var ServiceEditorStore = Reflux.createStore({
+var ServiceCreatorStore = Reflux.createStore({
 	listenables: Actions,
 	
 	onCreateService: function(agent){
@@ -176,4 +176,4 @@ var ServiceEditorStore = Reflux.createStore({
 });
 
 
-module.exports = ServiceEditorStore;
+module.exports = ServiceCreatorStore;

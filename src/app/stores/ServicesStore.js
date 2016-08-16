@@ -238,6 +238,36 @@ var ServicesStore = Reflux.createStore({
 
 	},
 
+	onEditService:function(serviceDesc){
+		var agentUrl='http://'+data.agent.hostname+':'+data.agent.port;
+
+		var srcBasepath = data.selected.basepath;
+		var destSrv = JSON.parse(JSON.stringify(data.selected));
+		destSrv.basepath = `${serviceDesc.appName}_${serviceDesc.serviceName}_v${serviceDesc.serviceVersion}`;
+
+		if(srcBasepath==destSrv.basepath){
+			Actions.closeEditor();
+			return;
+		}
+
+		$.ajax({
+			url: `${agentUrl}/${srcBasepath}`,
+			type: "POST",
+			dataType: "text",
+			data: JSON.stringify(destSrv),
+			success: (d,textStatus,xhr) => {
+				this.onRefreshServicesList(1);
+				Actions.closeEditor();
+				Actions.notify({title: srcBasepath, message:'Service modifié.',level:'success'});
+			},
+			error: (x, t, m) => {
+				this.onRefreshServicesList(1);
+				Actions.closeEditor();
+				Actions.notify({title: srcBasepath, message:x.responseText,level:'error'});
+			}
+		});
+	},
+
 	initData: function(){
 		data = {
 			services:[],

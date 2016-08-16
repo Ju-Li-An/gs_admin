@@ -37,7 +37,7 @@ var ServicesPanel = React.createClass({
 	},
 	
 	openEditor: function() {
-		Actions.showEditor('Nouveau Service','serviceEditor');
+		Actions.showEditor('Nouveau Service','lg','serviceCreator');
   	},
 
 	

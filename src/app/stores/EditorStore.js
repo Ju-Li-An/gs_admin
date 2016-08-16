@@ -23,11 +23,11 @@ var EditorStore = Reflux.createStore({
     },
 
 
-    onShowEditor:function(title,type){
+    onShowEditor:function(title,size,type){
     	data.show=true;
     	data.type=type;
     	data.title=title;
-        data.size='lg';
+        data.size=size;
     	this.trigger(data);
     },
 

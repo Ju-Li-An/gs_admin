@@ -2,78 +2,94 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Reflux = require('reflux');
 var Actions = require('../../actions/Actions.js');
-var TP = require('../basic/TP.jsx');
-var Button = require('react-bootstrap').Button;
-var ServiceEditorStore = require('../../stores/ServiceEditorStore.js');
-var Step = require('./steps/Step.jsx');
-var Recap = require('./Recap.jsx');
-var SE_Step_Service = require('./steps/SE_Step_Service.jsx');
-var SE_Step_API = require('./steps/SE_Step_API.jsx');
-var SE_Step_Prop = require('./steps/SE_Step_Prop.jsx');
-var SE_Step_Param = require('./steps/SE_Step_Param.jsx');
-var SE_Step_Transfert = require('./steps/SE_Step_Transfert.jsx');
-var SE_Step_Key = require('./steps/SE_Step_Key.jsx');
+var ServicesStore = require('../../stores/ServicesStore.js');
 
+const BASEPATH_DELIMITER='_';
 
 var ServiceEditor = React.createClass({
 	mixins: [
-			Reflux.listenTo(ServiceEditorStore, 'onStoreUpdate')
+		Reflux.listenTo(ServicesStore, 'onStoreUpdate')
 	],
 
+	componentDidMount: function(){
+		this.initValidator();
+	},
+
+	componentDidUpdate: function(){
+		this.initValidator();
+	},
+	
+	initValidator: function(){
+		$('#serviceEditorForm').validator();
+	},
+
+
 	getInitialState: function() {
-		return ServiceEditorStore.getDefaultData(this.props.agent,this.props.mode);
+		return this.extractData(ServicesStore.getDefaultData().selected.basepath);
 	},
 
 	onStoreUpdate: function(data){
-		if(data.status=='success'){
-			this.props.onCancel();
-			Actions.refreshServicesList(1);
-		}
-		this.setState(data);
+		this.setState(this.extractData(data.selected.basepath));
 	},
-	
+
+	extractData: function(basepath){
+		return {
+			appName: basepath.split(BASEPATH_DELIMITER)[0],
+			serviceName: basepath.split(BASEPATH_DELIMITER)[1],
+			serviceVersion: basepath.split(BASEPATH_DELIMITER)[2].substring(1),
+		};
+	},
+
+	getFormData: function(){
+		var data={
+			appName: ReactDOM.findDOMNode(this.refs.appName).value,
+			serviceName: ReactDOM.findDOMNode(this.refs.serviceName).value,
+			serviceVersion: ReactDOM.findDOMNode(this.refs.serviceVersion).value,
+		};
+
+		return data;
+	},
+
+	handleSubmit: function(event){
+		event.preventDefault();
+		var formData=this.getFormData();
+		formData.serviceVersion=(formData.serviceVersion == null || formData.serviceVersion == undefined || formData.serviceVersion == '')? '0':formData.serviceVersion;
+		Actions.editService(formData);
+	},
+
+	updateState:function(){
+		this.setState(this.getFormData());
+	},
+
 	render:function(){
-
-		var step=this.state.steps[this.state.currentStep];
-		//TODO: build the steps button
-		var steps = this.state.steps.map(function(step,index,array) {
-			return(
-				<Step title={step.title} enable={step.enable} index={index} complete={step.complete} active={step.active}/>
-			);
-		});
-
-		if (this.state.status && this.state.message) {
-			var classString = 'alert alert-' + this.state.status;
-			var status = (
-				<div id="status" className={classString} ref="status">
-					{this.state.message}
+		return (
+			<form id="serviceEditorForm" data-toggle="validator" role="form" action="" onSubmit={this.handleSubmit}>
+				<div className="form-group form-group-sm has-feedback">
+					<label htmlFor ="appName" className="control-label">Nom de l'application*</label>
+					<input type="text" pattern="^[\w]{1,}$" className="form-control" id="appName" ref="appName" placeholder="APPLICATION" onChange={this.updateState} value={this.state.appName} required/>
+					<span className="glyphicon form-control-feedback" aria-hidden="true"></span>
+					<div className="help-block with-errors"></div>
 				</div>
-			);
-		}
-
-		var recap = this.state.steps.map(function(step,index,array) {
-			return(
-				<Recap title={step.title} data={step.recap} />
-			);
-		});
-
-		var currentStep = React.createElement(step.render,{agent:this.props.agent,cancel:this.props.show,data:step.data,prev:step.prev},null);
-
-		return(
-			<div>
-				<ul className="nav nav-stacked col-sm-2 nav-pills">
-					{steps}
-				</ul>
-				<div className="col-md-8 se_step">
-					{status}
-					{currentStep}
+				<div className="form-group form-group-sm has-feedback">
+					<label htmlFor ="serviceName" className="control-label">Nom du service *</label>
+					<input type="text" pattern="^[\w]{1,}$" className="form-control" id="serviceName"  ref="serviceName" placeholder="SERVICE" onChange={this.updateState} value={this.state.serviceName} required/>
+					<span className="glyphicon form-control-feedback" aria-hidden="true"></span>
+					<div className="help-block with-errors"></div>
 				</div>
-				<div className="col-md-2 recap">
-					<h4>Récapitulatif</h4>
-					{recap}
+				<div className="form-group form-group-sm has-feedback">
+					<label htmlFor ="serviceVersion" className="control-label">Version du service</label>
+					<input type="text" pattern="^[.-\d]*$" className="form-control" id="serviceVersion" ref="serviceVersion" placeholder="0" onChange={this.updateState} value={this.state.serviceVersion} />
+					<span className="glyphicon form-control-feedback" aria-hidden="true"></span>
+					<div className="help-block with-errors"></div>
 				</div>
-			</div>
+				<div className="form-group">
+					<button type="button" className="btn btn-default" onClick={this.props.onCancel}>Annuler</button>
+					<button type="submit" className="btn btn-primary" ref="submitServiceEditorForm">Valider</button>
+				</div>
+			</form>
 		);
+
+
 	}
 
 });
