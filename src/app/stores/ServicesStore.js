@@ -238,32 +238,33 @@ var ServicesStore = Reflux.createStore({
 
 	},
 
-	onEditService:function(serviceDesc){
+	onEditService:function(basepath,serviceDesc){
 		var agentUrl='http://'+data.agent.hostname+':'+data.agent.port;
 
-		var srcBasepath = data.selected.basepath;
-		var destSrv = JSON.parse(JSON.stringify(data.selected));
-		destSrv.basepath = `${serviceDesc.appName}_${serviceDesc.serviceName}_v${serviceDesc.serviceVersion}`;
+		//var srcBasepath = data.selected.basepath;
+		//var destSrv = JSON.parse(JSON.stringify(data.selected));
+		var destbasepath = `${serviceDesc.appName}_${serviceDesc.serviceName}_v${serviceDesc.serviceVersion}`;
+		var destSrv={basepath:destbasepath};
 
-		if(srcBasepath==destSrv.basepath){
-			Actions.closeEditor();
+		if(basepath==destbasepath){
+			//Actions.closeEditor();
 			return;
 		}
 
 		$.ajax({
-			url: `${agentUrl}/${srcBasepath}`,
+			url: `${agentUrl}/${basepath}`,
 			type: "POST",
 			dataType: "text",
 			data: JSON.stringify(destSrv),
 			success: (d,textStatus,xhr) => {
 				this.onRefreshServicesList(1);
-				Actions.closeEditor();
-				Actions.notify({title: srcBasepath, message:'Service modifié.',level:'success'});
+				//Actions.closeEditor();
+				Actions.notify({title: basepath, message:'Service modifié.',level:'success'});
 			},
 			error: (x, t, m) => {
 				this.onRefreshServicesList(1);
-				Actions.closeEditor();
-				Actions.notify({title: srcBasepath, message:x.responseText,level:'error'});
+				//Actions.closeEditor();
+				Actions.notify({title: basepath, message:x.responseText,level:'error'});
 			}
 		});
 	},

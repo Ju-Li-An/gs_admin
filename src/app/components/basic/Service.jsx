@@ -1,12 +1,20 @@
 var React = require('react');
 var Actions = require('../../actions/Actions.js');
 var ButtonGS =  require('./ButtonGS.jsx');
-
+const BASEPATH_DELIMITER='_';
 
 var Service = React.createClass({
 
 	getInitialState:function(){
-		return({edit:false});
+		return({editMode:false,data:this.extractData(this.props.service.basepath)});
+	},
+
+	extractData: function(basepath){
+		return {
+			appName: basepath.split(BASEPATH_DELIMITER)[0],
+			serviceName: basepath.split(BASEPATH_DELIMITER)[1],
+			serviceVersion: basepath.split(BASEPATH_DELIMITER)[2].substring(1),
+		};
 	},
 	
 	select(event){
@@ -33,14 +41,54 @@ var Service = React.createClass({
 		} 
 	},
 
-	edit(event){
+	cancel(event){
 		event.preventDefault();
-		if(!this.props.selected)
-			Actions.selectService(this.props.service);
-		Actions.showEditor(`Edition du service ${this.props.service.basepath}`,'sm','serviceEditor');
+		this.setState({editMode:false,data:this.extractData(this.props.service.basepath)});
 	},
 
+	componentDidMount: function(){
+		this.initValidator();
+	},
+
+	componentDidUpdate: function(){
+		this.initValidator();
+	},
 	
+	initValidator: function(){
+		$('#serviceEditorForm').validator();
+	},
+
+	edit(event){
+		event.preventDefault();
+		/*if(!this.props.selected)
+			Actions.selectService(this.props.service);
+		Actions.showEditor(`Edition du service ${this.props.service.basepath}`,'sm','serviceEditor');*/
+		this.setState({editMode:true,data:this.state.data});
+	},
+
+	getFormData: function(){
+		return {
+			appName: ReactDOM.findDOMNode(this.refs.appName).value,
+			serviceName: ReactDOM.findDOMNode(this.refs.serviceName).value,
+			serviceVersion: ReactDOM.findDOMNode(this.refs.serviceVersion).value,
+		};
+	},
+
+	handleSubmit: function(event){
+		event.preventDefault();
+		var formData=this.getFormData();
+		formData.serviceVersion=(formData.serviceVersion == null || formData.serviceVersion == undefined || formData.serviceVersion == '')? '0':formData.serviceVersion;
+		Actions.editService(this.props.service.basepath,formData);
+		this.setState({editMode:false,data:this.state.data});
+	},
+
+	updateState:function(event){
+		event.preventDefault();
+		var data = this.state.data;
+		data[event.target.id]=event.target.value;
+		this.setState({editMode:true,data});
+	},
+
 	render: function() {
 		const service=this.props.service;
 		
@@ -56,16 +104,47 @@ var Service = React.createClass({
 			selectable="";
 		}
 		
-		return (
-				<tr className={ligneActive} onClick={selectable}> 
-					<th scope="row">{service.basepath}</th> 
+		if(this.state.editMode){
+			return (
+				<tr className={ligneActive} onClick={selectable}>
+					<td>
+						<form id="serviceEditorForm" data-toggle="validator" className="form-inline" role="form" action="" onSubmit={this.handleSubmit}>
+							<div className="form-group form-group-xs has-feedback">
+								<input type="text" pattern="^[\w]{1,}$" className="form-control" id="appName" data-tooltip="test" ref="appName" placeholder="APPLICATION" onChange={this.updateState} value={this.state.data.appName} required/>
+								<span className="glyphicon form-control-feedback" aria-hidden="true"></span>
+							</div>
+							<div className="form-group form-group-xs has-feedback">
+								<input type="text" pattern="^[\w]{1,}$" className="form-control" id="serviceName"  ref="serviceName" placeholder="SERVICE" onChange={this.updateState} value={this.state.data.serviceName} required/>
+								<span className="glyphicon form-control-feedback" aria-hidden="true"></span>
+							</div>
+							<div className="form-group form-group-xs has-feedback">
+								<input type="text" pattern="^[.-\d]*$" className="form-control" id="serviceVersion" ref="serviceVersion" placeholder="0" onChange={this.updateState} value={this.state.data.serviceVersion} />
+								<span className="glyphicon form-control-feedback" aria-hidden="true"></span>
+							</div>
+							<div className="form-group">
+								<button type="submit" className="btn btn-primary btn-xs" ref="submitServiceEditorForm">Valider</button>
+							</div>
+						</form>
+					</td>
 					<td>
 						<ButtonGS handleClick={this.remove} tooltip='Supprimer' style='remove' glyph='remove'/>
 						<ButtonGS handleClick={service.status?this.stop:this.start} tooltip={service.status?'Stop':'Start'} style='add' glyph={service.status?'stop':'play'}/>
-						<ButtonGS handleClick={this.edit} tooltip='Editer' style='add' glyph='pencil'/>
-					</td> 
+						<ButtonGS handleClick={this.cancel} tooltip='Annuler' style='remove' glyph='ban-circle'/>
+					</td>
 				</tr>
-			 );
+			);
+		}else{
+			return (
+					<tr className={ligneActive} onClick={selectable}> 
+						<th scope="row">{service.basepath}</th> 
+						<td>
+							<ButtonGS handleClick={this.remove} tooltip='Supprimer' style='remove' glyph='remove'/>
+							<ButtonGS handleClick={service.status?this.stop:this.start} tooltip={service.status?'Stop':'Start'} style='add' glyph={service.status?'stop':'play'}/>
+							<ButtonGS handleClick={this.edit} tooltip='Editer' style='add' glyph='pencil'/>
+						</td> 
+					</tr>
+				 );
+		}
     }
 });
 

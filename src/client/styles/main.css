@@ -151,10 +151,24 @@ table{
     font-style:italic;
 }
 
-
 .form-group{
     padding-right:3px;
     padding-left:3px;
+}
+
+.form-group-xs .form-control {
+    height: 22px;
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+    width:120px;
+}
+
+.form-group-xs .form-control-feedback{
+  height: 22px;
+  width: 28px;
+  line-height: 22px;
 }
 
 .form-control {
