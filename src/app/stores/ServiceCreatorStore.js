@@ -6,6 +6,7 @@ var SE_Step_Prop = require('../components/editors/steps/SE_Step_Prop.jsx');
 var SE_Step_Param = require('../components/editors/steps/SE_Step_Param.jsx');
 var SE_Step_Transfert = require('../components/editors/steps/SE_Step_Transfert.jsx');
 var SE_Step_Key = require('../components/editors/steps/SE_Step_Key.jsx');
+var ServicesStore = require('./ServicesStore.js');
 
 let data = {
 	service:{},
@@ -16,6 +17,18 @@ let data = {
 var ServiceCreatorStore = Reflux.createStore({
 	listenables: Actions,
 	
+	init: function() {
+        this.listenTo(ServicesStore, this.onServicesStoreChange);
+    },
+
+    onServicesStoreChange:function (storeData){
+		if(storeData.selected===-1){
+			return;
+		}
+		data.selected = storeData.selected;
+		data.agent=storeData.agent;
+	},
+
 	onCreateService: function(agent){
 		this.trigger(this.getDefaultData(agent));
 	},
@@ -36,24 +49,47 @@ var ServiceCreatorStore = Reflux.createStore({
 	publishService:function(){
 		var agentUrl='http://'+data.agent.hostname+':'+data.agent.port+'/';
 
-		// Récupération de la liste des Services
-		$.ajax({
-			url: `${agentUrl}${data.service.basepath}`,
-			type: "POST",
-			dataType: "text",
-			data: JSON.stringify(data.service),
-			success: (d,textStatus,xhr) => {
-				data.status='success';
-				data.message=`Service ${data.service.basepath} créé.`;
-				Actions.notify({title: data.service.basepath,message:'Service créé.',level:'success'});
-				this.trigger(data);
-			},
-			error: (x, t, m) => {
-				data.status='danger';
-				data.message=x.responseText;
-				this.trigger(data);
-			}
-		});
+		if(data.mode=='addApi'){
+			$.ajax({
+				url: `${agentUrl}${data.service.basepath}/${data.steps[1].data.apiName}`,
+				type: "PUT",
+				dataType: "text",
+				data: JSON.stringify(data.service),
+				success: (d,textStatus,xhr) => {
+					data.status='success';
+					data.message=`API ${data.steps[1].data.apiName} créé.`;
+					Actions.notify({title: data.service.basepath,message:data.message,level:'success'});
+					this.trigger(data);
+				},
+				error: (x, t, m) => {
+					data.status='danger';
+					data.message=x.responseText;
+					this.trigger(data);
+				}
+			});
+
+
+		}else{
+			// Récupération de la liste des Services
+			$.ajax({
+				url: `${agentUrl}${data.service.basepath}`,
+				type: "POST",
+				dataType: "text",
+				data: JSON.stringify(data.service),
+				success: (d,textStatus,xhr) => {
+					data.status='success';
+					data.message=`Service ${data.service.basepath} créé.`;
+					Actions.notify({title: data.service.basepath,message:'Service créé.',level:'success'});
+					this.trigger(data);
+				},
+				error: (x, t, m) => {
+					data.status='danger';
+					data.message=x.responseText;
+
+					this.trigger(data);
+				}
+			});
+		}
 	},
 
 	onSubmitStep: function(formData){
@@ -63,23 +99,18 @@ var ServiceCreatorStore = Reflux.createStore({
 				data.steps[0].data.appName=formData.appName;
 				data.steps[0].data.serviceName=formData.serviceName;
 				data.steps[0].data.serviceVersion=formData.serviceVersion;
-				//SERVICE
-				data.service.basepath=`${formData.appName}_${formData.serviceName}_v${formData.serviceVersion}`;
 				//RECAP
 				data.steps[0].recap=[{label:'Service',value:data.service.basepath}];
 
 				//Init next Step
-				data.steps[1].prev.basepath=data.service.basepath;
+				data.steps[1].prev.basepath=`${formData.appName}_${formData.serviceName}_v${formData.serviceVersion}`;
 				break;
 			case 1:
 				///STEP
 				data.steps[1].data.apiName=formData.apiName;
 				data.steps[1].data.apiUri=formData.apiUri;
 				data.steps[1].data.apiMethod=formData.apiMethod;
-				//SERVICE
-				data.service.apis[0].name=formData.apiName;
-				data.service.apis[0].uri=formData.apiUri;
-				data.service.apis[0].operations[0].method=formData.apiMethod;
+				
 				//RECAP
 				data.steps[1].recap=[{label:'Méthode',value:formData.apiMethod},{label:'URI',value:formData.apiUri}];
 				break;
@@ -87,16 +118,13 @@ var ServiceCreatorStore = Reflux.createStore({
 				///STEP
 				data.steps[2].data.responseType=formData.responseType;
 				data.steps[2].data.delay=formData.delay;
-				//SERVICE
-				data.service.apis[0].operations[0].responseType=`text/${formData.responseType};charset=UTF-8`;
-				data.service.apis[0].operations[0].delay=formData.delay;
+
 				//RECAP
 				data.steps[2].recap=[{label:'Delay',value:formData.delay+" ms"},{label:'Réponse format',value:formData.responseType}];
 				break;
 			case 3:
 				data.steps[3].data.params=formData.params;
 
-				data.service.apis[0].operations[0].parameters=formData.params;
 				break;
 			case 4:
 				data.steps[4].data.tps=formData.tps;
@@ -110,19 +138,15 @@ var ServiceCreatorStore = Reflux.createStore({
 					return element!=undefined;
 				});
 				
-				
 				data.steps[5].data.keys=keys;
-
-				data.service.apis[0].operations[0].transferProperties=formData.tps;
 				break;
 			case 5:
 				data.steps[5].data.keys=formData.keys;
 				data.steps[5].data.regles=formData.regles;
 
-				data.service.apis[0].operations[0].keys=formData.keys;
-				data.service.apis[0].operations[0].regExpKeys=formData.regles;
 				data.steps[5].recap=[{label:'Clé',value:formData.keys.join('.')}];
 
+				this.buildService();
 				this.publishService();
 				return;
 		}
@@ -136,11 +160,62 @@ var ServiceCreatorStore = Reflux.createStore({
 		this.trigger(data);
 	},
 
-	getDefaultData: function(agent){
-		data.agent=agent;
+	buildService:function(){
+		var api;
+		if(data.mode=='createService'){
+			data.service=this.getNewService();
+		}else{
+			data.service=JSON.parse(JSON.stringify(data.selected));
+		}
+
+		api = this.getNewApi();
+		api.name=data.steps[1].data.apiName;
+		api.uri=data.steps[1].data.apiUri;
+		api.operations[0].method=data.steps[1].data.apiMethod;
+		api.operations[0].responseType=`text/${data.steps[2].data.responseType};charset=UTF-8`;
+		api.operations[0].delay=parseInt(data.steps[2].data.delay);
+		api.operations[0].parameters=data.steps[3].data.params;
+		api.operations[0].transferProperties=data.steps[4].data.tps;
+		api.operations[0].keys=data.steps[5].data.keys;
+		api.operations[0].regExpKeys=data.steps[5].data.regles;
+		
+		data.service.apis.push(api);
+		
+		if(data.mode=='createService'){
+			data.service.basepath=`${data.steps[0].data.appName}_${data.steps[0].data.serviceName}_v${data.steps[0].data.serviceVersion}`;
+		}
+	},
+
+	getNewApi:function(){
+		return {
+			name:'default',
+			uri:'/',
+			operations:[{
+				method:'POST',
+				transferProperties:[],
+				parameters:[],
+				keys:[],
+				regExpKeys:[],
+				responseType:'text/xml;charset=UTF-8',
+				delay:0
+			}]
+		};
+	},
+
+	getNewService:function(){
+		return {
+			basepath:'',
+			state:'stopped',
+			apis:[]
+		};
+	},
+
+
+	getDefaultData: function(mode){
 		
 		data.status='';
 		data.message='';
+		data.mode=mode;
 
 		data.steps=[
 			{title:'Service',complete:false,active:true, enable:true,render:SE_Step_Service,data:{appName:'',serviceName:'',serviceVersion:''},recap:[]},
@@ -151,25 +226,16 @@ var ServiceCreatorStore = Reflux.createStore({
 			{title:'Clés et règles',complete:false,active:false,enable:false, render:SE_Step_Key,data:{keys:[],regles:[]},recap:[]}
 		];
 
-		data.currentStep=0;
-
-		data.service={
-			basepath:'',
-			state:'stopped',
-			apis:[{
-				name:'default',
-				uri:'/',
-				operations:[{
-					method:'POST',
-					transferProperties:[],
-					parameters:[],
-					keys:[],
-					regExpKeys:[],
-					responseType:'text/xml;charset=UTF-8',
-					delay:'0'
-				}]
-			}]
-		};
+		if(mode=='addApi'){
+			data.currentStep=1;
+			data.steps[0].active=false;
+			data.steps[0].enable=false;
+			data.steps[1].active=true;
+			data.steps[1].enable=true;
+			data.steps[1].prev.basepath=data.selected.basepath;
+		}else{
+			data.currentStep=0;
+		}
 
 		return data;
 	}

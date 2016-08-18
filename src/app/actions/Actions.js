@@ -18,6 +18,8 @@ var Actions = Reflux.createActions([
 	
 	// API ACTIONS
 	"selectApi",
+	"editApi",
+	"deleteApi",
 	
 	// TP ACTIONS
 	"selectTp",

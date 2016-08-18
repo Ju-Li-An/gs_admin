@@ -45,7 +45,7 @@ var ApisStore = Reflux.createStore({
 		
 		this.trigger(data);
 	},
-	
+
 	onSelectApi:function(api){
 		data.selected=api;
 		this.trigger(data);

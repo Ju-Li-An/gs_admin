@@ -4,7 +4,6 @@ var Actions = require('../../actions/Actions.js');
 var ServicesStore = require('../../stores/ServicesStore.js');
 var Service = require('../basic/Service.jsx');
 var Panel = require('./Panel.jsx');
-var ServiceEditor = require('../editors/ServiceEditor.jsx');
 var Button = require('react-bootstrap').Button;
 var Glyphicon = require('react-bootstrap').Glyphicon;
 

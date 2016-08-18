@@ -1,6 +1,7 @@
 var React = require('react');
 var Actions = require('../../actions/Actions.js');
 var ButtonGS =  require('./ButtonGS.jsx');
+var GSTooltip = require('./GSTooltip.jsx');
 const BASEPATH_DELIMITER='_';
 
 var Service = React.createClass({
@@ -15,6 +16,10 @@ var Service = React.createClass({
 			serviceName: basepath.split(BASEPATH_DELIMITER)[1],
 			serviceVersion: basepath.split(BASEPATH_DELIMITER)[2].substring(1),
 		};
+	},
+
+	componentWillReceiveProps(nextProps) {
+		this.setState({editMode:this.state.editMode,data:this.extractData(nextProps.service.basepath)});
 	},
 	
 	select(event){
@@ -60,23 +65,12 @@ var Service = React.createClass({
 
 	edit(event){
 		event.preventDefault();
-		/*if(!this.props.selected)
-			Actions.selectService(this.props.service);
-		Actions.showEditor(`Edition du service ${this.props.service.basepath}`,'sm','serviceEditor');*/
 		this.setState({editMode:true,data:this.state.data});
-	},
-
-	getFormData: function(){
-		return {
-			appName: ReactDOM.findDOMNode(this.refs.appName).value,
-			serviceName: ReactDOM.findDOMNode(this.refs.serviceName).value,
-			serviceVersion: ReactDOM.findDOMNode(this.refs.serviceVersion).value,
-		};
 	},
 
 	handleSubmit: function(event){
 		event.preventDefault();
-		var formData=this.getFormData();
+		var formData=this.state.data;
 		formData.serviceVersion=(formData.serviceVersion == null || formData.serviceVersion == undefined || formData.serviceVersion == '')? '0':formData.serviceVersion;
 		Actions.editService(this.props.service.basepath,formData);
 		this.setState({editMode:false,data:this.state.data});
@@ -86,7 +80,7 @@ var Service = React.createClass({
 		event.preventDefault();
 		var data = this.state.data;
 		data[event.target.id]=event.target.value;
-		this.setState({editMode:true,data});
+		this.setState({editMode:true,data:data});
 	},
 
 	render: function() {
@@ -103,6 +97,7 @@ var Service = React.createClass({
 			ligneActive+=" line-selected";
 			selectable="";
 		}
+
 		
 		if(this.state.editMode){
 			return (
@@ -110,15 +105,21 @@ var Service = React.createClass({
 					<td>
 						<form id="serviceEditorForm" data-toggle="validator" className="form-inline" role="form" action="" onSubmit={this.handleSubmit}>
 							<div className="form-group form-group-xs has-feedback">
-								<input type="text" pattern="^[\w]{1,}$" className="form-control" id="appName" data-tooltip="test" ref="appName" placeholder="APPLICATION" onChange={this.updateState} value={this.state.data.appName} required/>
+								<GSTooltip placement="top" text="Application">
+									<input type="text" pattern="^[\w]{1,}$" className="form-control" id="appName" placeholder="APPLICATION" onChange={this.updateState} value={this.state.data.appName} required/>
+								</GSTooltip>
 								<span className="glyphicon form-control-feedback" aria-hidden="true"></span>
 							</div>
 							<div className="form-group form-group-xs has-feedback">
-								<input type="text" pattern="^[\w]{1,}$" className="form-control" id="serviceName"  ref="serviceName" placeholder="SERVICE" onChange={this.updateState} value={this.state.data.serviceName} required/>
+								<GSTooltip placement="top" text="Service">
+									<input type="text" pattern="^[\w]{1,}$" className="form-control" id="serviceName" placeholder="SERVICE" onChange={this.updateState} value={this.state.data.serviceName} required/>
+								</GSTooltip>
 								<span className="glyphicon form-control-feedback" aria-hidden="true"></span>
 							</div>
 							<div className="form-group form-group-xs has-feedback">
-								<input type="text" pattern="^[.-\d]*$" className="form-control" id="serviceVersion" ref="serviceVersion" placeholder="0" onChange={this.updateState} value={this.state.data.serviceVersion} />
+								<GSTooltip placement="top" text="Version">
+									<input type="text" pattern="^[.-\d]*$" className="form-control" id="serviceVersion" placeholder="0" onChange={this.updateState} value={this.state.data.serviceVersion} />
+								</GSTooltip>
 								<span className="glyphicon form-control-feedback" aria-hidden="true"></span>
 							</div>
 							<div className="form-group">

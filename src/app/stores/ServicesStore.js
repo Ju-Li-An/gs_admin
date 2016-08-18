@@ -241,13 +241,10 @@ var ServicesStore = Reflux.createStore({
 	onEditService:function(basepath,serviceDesc){
 		var agentUrl='http://'+data.agent.hostname+':'+data.agent.port;
 
-		//var srcBasepath = data.selected.basepath;
-		//var destSrv = JSON.parse(JSON.stringify(data.selected));
 		var destbasepath = `${serviceDesc.appName}_${serviceDesc.serviceName}_v${serviceDesc.serviceVersion}`;
 		var destSrv={basepath:destbasepath};
 
 		if(basepath==destbasepath){
-			//Actions.closeEditor();
 			return;
 		}
 
@@ -258,13 +255,76 @@ var ServicesStore = Reflux.createStore({
 			data: JSON.stringify(destSrv),
 			success: (d,textStatus,xhr) => {
 				this.onRefreshServicesList(1);
-				//Actions.closeEditor();
 				Actions.notify({title: basepath, message:'Service modifié.',level:'success'});
 			},
 			error: (x, t, m) => {
 				this.onRefreshServicesList(1);
-				//Actions.closeEditor();
 				Actions.notify({title: basepath, message:x.responseText,level:'error'});
+			}
+		});
+	},
+
+	onDeleteApi:function(api){
+
+		var agentUrl='http://'+data.agent.hostname+':'+data.agent.port;
+
+		$.ajax({
+			url: `${agentUrl}/${data.selected.basepath}/${api.name}`,
+			type: "DELETE",
+			dataType: "json",
+			success: (result) => {
+				data.selected=result;
+				this.trigger(data);
+				Actions.notify({title: data.selected.basepath, message:`API ${api.name} supprimée.`,level:'success'});
+			},
+			error: (x, t, m) => {
+				Actions.notify({title: data.selected.basepath,message:x.responseText,level:'error'});
+			}
+		});
+
+	},
+
+	onEditApi:function(oldApi,newApi){
+		var agentUrl='http://'+data.agent.hostname+':'+data.agent.port;
+
+		if(oldApi.name == newApi.name
+			&& oldApi.method == newApi.method
+			&& oldApi.uri == newApi.uri){
+			return;
+		}
+
+
+		var apis = data.selected.apis;
+		var apiEdited; 
+		for(var apiId in apis){
+			if(apis[apiId].name == oldApi.name){
+				apiEdited = apis[apiId];
+				apiEdited.name = newApi.name;
+				apiEdited.uri = newApi.uri;
+				var opes = apiEdited.operations;
+				for(var opeId in opes){
+					if(opes[opeId].method==oldApi.method){
+						opes[opeId].method=newApi.method;
+						break;
+					}
+				}
+				break;
+			}
+		}
+
+		var basepath = data.selected.basepath;
+		$.ajax({
+			url: `${agentUrl}/${basepath}/${oldApi.name}`,
+			type: "POST",
+			dataType: "text",
+			data: JSON.stringify(apiEdited),
+			success: (d,textStatus,xhr) => {
+				this.onRefreshServicesList(1);
+				Actions.notify({title: basepath, message:'API modifiée.',level:'success'});
+			},
+			error: (x, t, m) => {
+				this.onRefreshServicesList(1);
+				Actions.notify({title:basepath, message:x.responseText,level:'error'});
 			}
 		});
 	},

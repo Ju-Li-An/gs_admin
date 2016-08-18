@@ -3,7 +3,6 @@ var Reflux = require('reflux');
 var Modal = require('react-bootstrap').Modal;
 var EditorStore = require('../../stores/EditorStore.js');
 var ServiceCreator = require('./ServiceCreator.jsx');
-var ServiceEditor = require('./ServiceEditor.jsx');
 var Actions = require('../../actions/Actions.js');
 
 var Editor = React.createClass({
@@ -30,10 +29,10 @@ var Editor = React.createClass({
 	getModalContent:function(){
 		switch (this.state.type){
 			case 'serviceCreator':
-				return (<ServiceCreator agent={this.state.agent} onCancel={this.closeEditor}/>);
+				return (<ServiceCreator agent={this.state.agent} onCancel={this.closeEditor} mode='createService'/>);
 				break;
-			case 'serviceEditor':
-				return (<ServiceEditor agent={this.state.agent} onCancel={this.closeEditor}/>);
+			case 'apiCreator':
+				return (<ServiceCreator agent={this.state.agent} onCancel={this.closeEditor} mode='addApi'/>);
 				break;
 		}
 		return;

@@ -24,7 +24,7 @@ var ApisPanel = React.createClass({
 	
 	//TODO
 	addApi(event){
-		event.preventDefault();
+		Actions.showEditor('Nouvel API','lg','apiCreator');
 	},
 	
 

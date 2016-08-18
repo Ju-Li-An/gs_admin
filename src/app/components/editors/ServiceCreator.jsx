@@ -21,7 +21,7 @@ var ServiceCreator = React.createClass({
 	],
 
 	getInitialState: function() {
-		return ServiceCreatorStore.getDefaultData(this.props.agent,this.props.mode);
+		return ServiceCreatorStore.getDefaultData(this.props.mode);
 	},
 
 	onStoreUpdate: function(data){
