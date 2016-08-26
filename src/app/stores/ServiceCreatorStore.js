@@ -53,11 +53,14 @@ var ServiceCreatorStore = Reflux.createStore({
 			$.ajax({
 				url: `${agentUrl}${data.service.basepath}/${data.steps[1].data.apiName}`,
 				type: "PUT",
-				dataType: "text",
+				dataType: "json",
 				data: JSON.stringify(data.service),
 				success: (d,textStatus,xhr) => {
 					data.status='success';
 					data.message=`API ${data.steps[1].data.apiName} créé.`;
+					data.saved=d;
+					console.log("publishService");
+					console.log(d);
 					Actions.notify({title: data.service.basepath,message:data.message,level:'success'});
 					this.trigger(data);
 				},
@@ -70,7 +73,6 @@ var ServiceCreatorStore = Reflux.createStore({
 
 
 		}else{
-			// Récupération de la liste des Services
 			$.ajax({
 				url: `${agentUrl}${data.service.basepath}`,
 				type: "POST",
@@ -146,7 +148,11 @@ var ServiceCreatorStore = Reflux.createStore({
 
 				data.steps[5].recap=[{label:'Clé',value:formData.keys.join('.')}];
 
-				this.buildService();
+				if(!this.buildService()){
+					this.trigger(data);
+					return;
+				}
+
 				this.publishService();
 				return;
 		}
@@ -164,26 +170,55 @@ var ServiceCreatorStore = Reflux.createStore({
 		var api;
 		if(data.mode=='createService'){
 			data.service=this.getNewService();
+			api = this.getNewApi();
+			api.name=data.steps[1].data.apiName;
+			api.uri=data.steps[1].data.apiUri;
+			api.operations[0].method=data.steps[1].data.apiMethod;
+			api.operations[0].responseType=`text/${data.steps[2].data.responseType};charset=UTF-8`;
+			api.operations[0].delay=parseInt(data.steps[2].data.delay);
+			api.operations[0].parameters=data.steps[3].data.params;
+			api.operations[0].transferProperties=data.steps[4].data.tps;
+			api.operations[0].keys=data.steps[5].data.keys;
+			api.operations[0].regExpKeys=data.steps[5].data.regles;
+			
+			data.service.apis.push(api);
+		
+			data.service.basepath=`${data.steps[0].data.appName}_${data.steps[0].data.serviceName}_v${data.steps[0].data.serviceVersion}`;
+			
 		}else{
 			data.service=JSON.parse(JSON.stringify(data.selected));
-		}
 
-		api = this.getNewApi();
-		api.name=data.steps[1].data.apiName;
-		api.uri=data.steps[1].data.apiUri;
-		api.operations[0].method=data.steps[1].data.apiMethod;
-		api.operations[0].responseType=`text/${data.steps[2].data.responseType};charset=UTF-8`;
-		api.operations[0].delay=parseInt(data.steps[2].data.delay);
-		api.operations[0].parameters=data.steps[3].data.params;
-		api.operations[0].transferProperties=data.steps[4].data.tps;
-		api.operations[0].keys=data.steps[5].data.keys;
-		api.operations[0].regExpKeys=data.steps[5].data.regles;
-		
-		data.service.apis.push(api);
-		
-		if(data.mode=='createService'){
-			data.service.basepath=`${data.steps[0].data.appName}_${data.steps[0].data.serviceName}_v${data.steps[0].data.serviceVersion}`;
+			var apiNames = data.service.apis.map(function(val){return val.name;});
+			if(apiNames.includes(data.steps[1].data.apiName)){
+				data.status='error';
+				data.message=`API ${data.steps[1].data.apiName} existe déjà.`;
+				return false;
+			}
+
+			var apiUris = data.service.apis.map(function(val){return val.uri;});
+			if(apiUris.includes(data.steps[1].data.apiUri)){
+				data.status='error';
+				data.message=`API URI ${data.steps[1].data.apiUri} existe déjà.`;
+				return false;
+			}
+			
+			api = this.getNewApi();
+			api.name=data.steps[1].data.apiName;
+			api.uri=data.steps[1].data.apiUri;
+			api.operations[0].method=data.steps[1].data.apiMethod;
+			api.operations[0].responseType=`text/${data.steps[2].data.responseType};charset=UTF-8`;
+			api.operations[0].delay=parseInt(data.steps[2].data.delay);
+			api.operations[0].parameters=data.steps[3].data.params;
+			api.operations[0].transferProperties=data.steps[4].data.tps;
+			api.operations[0].keys=data.steps[5].data.keys;
+			api.operations[0].regExpKeys=data.steps[5].data.regles;
+			
+
+			data.service.apis.push(api);
+			
 		}
+		return true;
+
 	},
 
 	getNewApi:function(){

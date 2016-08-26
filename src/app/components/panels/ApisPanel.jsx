@@ -14,15 +14,13 @@ var ApisPanel = React.createClass({
 	
 	getInitialState: function() {
 		var data = ApisStore.getDefaultData();
-		return {apis: data.apis, selected: data.selected};
+		return {apis: data.apis, selected: data.selected.api};
 	},
 	
 	onStoreUpdate(data){
-		this.setState({apis: data.apis,selected:data.selected});
+		this.setState({apis: data.apis,selected:data.selected.api});
 	},
 	
-	
-	//TODO
 	addApi(event){
 		Actions.showEditor('Nouvel API','lg','apiCreator');
 	},
@@ -31,7 +29,7 @@ var ApisPanel = React.createClass({
 	render: function() {
 		var apis = this.state.apis.map(function(api,index,array) {
 			return (
-				<Api api={api} selected={api.name==this.state.selected.name}/>
+				<Api data={api} selected={(api.name==this.state.selected.name)}/>
 			);
 		},this);
 	
@@ -42,7 +40,7 @@ var ApisPanel = React.createClass({
 		);
 		
 		return (
-			<Panel title="Apis / Opérations" links={links}>
+			<Panel title="Apis" links={links}>
 				<table className="table table-condensed table-hover">
 					<tbody>
 						{apis}

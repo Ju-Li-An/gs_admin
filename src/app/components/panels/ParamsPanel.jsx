@@ -20,7 +20,7 @@ var ParamsPanel = React.createClass({
 		if(data.selected===-1)
 			this.setState({params: []});
 		else
-			this.setState({params: data.selected.parameters});
+			this.setState({params: data.selected.operation.parameters});
 	},
 	
 	//TODO

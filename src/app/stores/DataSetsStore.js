@@ -31,8 +31,8 @@ var DataSetsStore = Reflux.createStore({
 		}
 		data.agent = storeData.agent;
 		data.currentService = storeData.currentService;
-		data.currentApi=storeData.selected.name;
-		data.currentOpe=storeData.selected.method;
+		data.currentApi=storeData.selected.api.name;
+		data.currentOpe=storeData.selected.operation.method;
 		data.filter='';
 		
 		//si le statut de l'agent est arrêté, on ne tente pas l'appel pour afficher les services

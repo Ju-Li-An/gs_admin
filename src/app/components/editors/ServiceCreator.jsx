@@ -27,7 +27,13 @@ var ServiceCreator = React.createClass({
 	onStoreUpdate: function(data){
 		if(data.status=='success'){
 			this.props.onCancel();
-			Actions.refreshServicesList(1);
+			if(this.props.mode!='addApi'){
+				Actions.refreshServicesList(1);
+			}
+			else{
+				console.log(this.props.mode);
+				Actions.refreshSelected(data.saved);
+			}
 		}
 		this.setState(data);
 	},

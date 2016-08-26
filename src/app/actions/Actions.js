@@ -11,6 +11,7 @@ var Actions = Reflux.createActions([
 	"startService",
 	"stopService",
 	"editService",
+	"refreshSelected",
 	
 	//SERVICE EDITOR
 	"selectStep",
@@ -20,9 +21,18 @@ var Actions = Reflux.createActions([
 	"selectApi",
 	"editApi",
 	"deleteApi",
+
+	// OPERATION
+	"selectOperation",
+	"deleteOperation",
+	"addOperation",
+	"editOperation",
 	
 	// TP ACTIONS
+	"addTp",
 	"selectTp",
+	"editTp",
+	"deleteTp",
 	
 	// Datasets ACTIONS
 	"selectDataset",

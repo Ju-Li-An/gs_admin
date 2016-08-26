@@ -14,20 +14,29 @@ var TPsPanel = React.createClass({
 	
 	getInitialState: function() {
 		var data = ApisStore.getDefaultData();
-		return {tps: [],keys:[]};
+		return {tps: [],keys:[],showAddForm:false};
 	},
 	
 	onStoreUpdate(data){
 		if(data.selected===-1)
-			this.setState({tps: [],keys:[]});
+			this.setState({tps: [],keys:[],showAddForm:this.state.showAddForm});
 		else
-			this.setState({tps: data.selected.transferProperties,keys:data.selected.keys});
+			this.setState({tps: data.selected.operation.transferProperties,keys:data.selected.operation.keys,showAddForm:this.state.showAddForm});
 	},
-	
-	//TODO
-	addTp:function(event){
-		event.preventDefault();
+
+	showAddTp(event){
+		this.setState({tps: this.state.tps,keys:this.state.keys,showAddForm:true});
 	},
+
+	handleCancelAdd(event){
+		this.setState({tps: this.state.tps,keys:this.state.keys,showAddForm:false});
+	},
+
+	handleAddTp(tp){
+		Actions.addTp(tp);
+		this.setState({tps: this.state.tps,keys:this.state.keys,showAddForm:false});
+	},
+
 
 	render: function() {
 		var title="Transfert(s) - key: ";
@@ -55,10 +64,14 @@ var TPsPanel = React.createClass({
 				<TP tp={tp} isKey={tpKey}/>
 			);
 		},this);
+
+		if(this.state.showAddForm){
+			var addForm = (<TP tp={null} isKey={null} onCancelAdd={this.handleCancelAdd} onAdd={this.handleAddTp}/>);
+		}
 	
 		var links=(
 			<div className="pull-right">
-					<Button href="#" bsStyle="add" bsSize="xsmall" onClick={this.addTp}><Glyphicon glyph="plus" /></Button>
+					<Button href="#" bsStyle="add" bsSize="xsmall" onClick={this.showAddTp}><Glyphicon glyph="plus" /></Button>
 			</div>
 		);
 		
@@ -67,6 +80,7 @@ var TPsPanel = React.createClass({
 				<table className="table table-condensed table-hover">
 					<tbody>
 						{tps}
+						{addForm}
 					</tbody>
 				</table>
 			</Panel>

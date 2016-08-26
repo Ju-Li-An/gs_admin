@@ -1,7 +1,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Actions = require('../../../actions/Actions.js');
-var TP = require('../../basic/TP.jsx');
+var TP = require('../../basic/TPSimple.jsx');
 var Button = require('react-bootstrap').Button;
 var Glyphicon = require('react-bootstrap').Glyphicon;
 

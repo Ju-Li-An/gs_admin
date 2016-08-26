@@ -2,6 +2,7 @@ var React = require('react');
 var AgentsPanel = require('../components/panels/AgentsPanel.jsx');
 var ServicesPanel = require('../components/panels/ServicesPanel.jsx');
 var ApisPanel = require('../components/panels/ApisPanel.jsx');
+var OperationsPanel = require('../components/panels/OperationsPanel.jsx');
 var TPsPanel = require('../components/panels/TPsPanel.jsx');
 var ParamsPanel = require('../components/panels/ParamsPanel.jsx');
 var PropsPanel = require('../components/panels/PropsPanel.jsx');
@@ -63,8 +64,11 @@ var AdminSimulateurs = React.createClass({
 					<div className="col-lg-4">
 						<ServicesPanel/>
 					</div>
-					<div className="col-lg-5">
+					<div className="col-lg-3">
 						<ApisPanel/>
+					</div>
+					<div className="col-lg-2">
+						<OperationsPanel/>
 					</div>
 				</div>
 				

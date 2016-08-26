@@ -30,11 +30,11 @@ var PropsPanel = React.createClass({
 			});
 		else
 			this.setState({
-					responseType: data.selected.responseType,
-					delay:data.selected.delay,
-					errorTemplate:data.selected.errorTemplate,
-					regExpKeys:data.selected.regExpKeys
-				});
+				responseType: data.selected.operation.responseType,
+				delay:data.selected.operation.delay,
+				errorTemplate:data.selected.operation.errorTemplate,
+				regExpKeys:data.selected.operation.regExpKeys
+			});
 	},
 	
 	//TODO
