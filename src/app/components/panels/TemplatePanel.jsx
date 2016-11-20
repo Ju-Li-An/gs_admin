@@ -1,8 +1,6 @@
 var React = require('react');
 var Reflux = require('reflux');
-//var AceEditor = require('react-ace');
-//var hljs = require('./highlight.js');
-
+var Highlight = require('react-syntax-highlight');
 var Actions = require('../../actions/Actions.js');
 var DataSetsStore = require('../../stores/DataSetsStore.js');
 var Panel = require('./Panel.jsx');
@@ -14,28 +12,15 @@ var TemplatePanel = React.createClass({
 	
 	getInitialState: function() {
 		var data = DataSetsStore.getDefaultData();
-		return {name:data.selected.template.name, content: data.selected.template.content};
+		var content= data.selected.template.content;
+		return {name:data.selected.template.name, content:content, initial:content};
 	},
+
 	
 	onStoreUpdate(data){
-		this.setState({name:data.selected.template.name, content: data.selected.template.content});
+		var content= data.selected.template.content;
+		this.setState({name:data.selected.template.name, content: content,initial:content});
 	},
- /*componentDidMount: function () {
-    this.highlightCode();
-  },
-  componentDidUpdate: function () {
-    this.highlightCode();
-  },
-	
- highlightCode: function () {
-    var domNode = ReactDOM.findDOMNode(this);
-    var nodes = domNode.querySelectorAll('pre code');
-    if (nodes.length > 0) {
-      for (var i = 0; i < nodes.length; i=i+1) {
-        hljs.highlightBlock(nodes[i]);
-      }
-    }
-  },*/
 	
 	render: function() {
 		
@@ -46,20 +31,27 @@ var TemplatePanel = React.createClass({
 		
 		var title="Template - "+this.state.name;
 
-		
 		var content = this.state.content;
-
-		/*var document="";
-		
-		if(content){
-			document = content.documentElement.outerHTML;
-		}*/
-		
 		
 		return (
-			<Panel title={title} links={links}>
-				<pre><code className="template">{content}</code></pre>
-			</Panel>
+			<Panel title="Aperçu du template" links={links}>
+				<div>
+					<Highlight
+						lang='xml'
+						value={this.state.content}
+						/>
+
+					<pre>
+						<code
+						  className='hljs textarea'
+						  contentEditable='false'
+						  spellCheck='false'
+						  onInput={e => this.setState({ content: e.target.innerText })}>
+						  {this.state.initial}
+						</code>
+					</pre>
+		        </div>
+		     </Panel>
 		);
   }
 });

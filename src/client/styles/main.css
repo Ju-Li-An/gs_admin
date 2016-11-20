@@ -141,8 +141,61 @@ li.placeholder:before {
    height:27vh;
 }
 
+.panel-bodyTemplate{
+  height:27vh;
+  padding: 5px;
+}
+
+
+pre {
+  position: absolute;
+  padding: 0;
+  width: 90%;
+  min-height: 50px;
+  background-color:transparent;
+}
+
+code {
+  min-height: 50px;
+  border: 1px solid lightgray;
+  border-radius: 3px;
+}
+
+.textarea {
+  color: gray;
+  opacity: 0.1;
+}
+
 table{
   margin-bottom:10px;
+}
+
+.group-xsmall{
+  max-width:8%;
+}
+
+.group-small{
+  max-width:10%;
+}
+
+.group-normal{
+  max-width:20%;
+}
+
+.group-large{
+  max-width:30%;
+}
+
+.tdEdit{
+  width:90%;
+}
+
+.paramButtons{
+  width:10%;
+}
+
+.dataButtons{
+  width:18%;
 }
 
 .stopped{
@@ -151,9 +204,16 @@ table{
     font-style:italic;
 }
 
+
+input[type=checkbox], input[type=radio] {
+  margin:0;
+  height: 15px !important;
+}
+
 .form-group{
     padding-right:3px;
     padding-left:3px;
+    margin-bottom:4px;
 }
 
 .form-group-xs .form-control {
@@ -162,17 +222,43 @@ table{
     font-size: 12px;
     line-height: 1.5;
     border-radius: 3px;
-    max-width:120px;
+    width:100%;
 }
 
 .form-group-xs .form-control-feedback{
   height: 22px;
-  width: 28px;
   line-height: 22px;
 }
 
+/*.input-small{
+  width: 50px;
+}
+
+.input-normal{
+  width: 100px;
+}7
+
+.input-large{
+  width: 150px;
+}*/
+
 .form-control {
     padding:0;
+}
+
+
+
+.validation-error {
+  color: red;
+  margin: 5px 0;
+}
+
+.form-group.required input[type='text'],
+.form-group.required input[type='email'],
+.form-group.required input[type='number'],
+.form-group.required input[type='password'],
+.form-group.required select {
+  border-color: #FF9696;
 }
 
 .modal-body{
@@ -204,6 +290,11 @@ table{
     border-color: #ddd;
     border-style:solid ;
     border-width: 0 0 1px 0;
+}
+
+
+.btn-xs{
+  padding:1px 3px;
 }
 
 .btn-remove{
@@ -398,5 +489,10 @@ table{
         margin-right: 0;
     }
 
-    
+    .form-horizontal .control-label {
+      padding-top: 3px;
+      margin-bottom: 0;
+      text-align: right;
+    }
+
 }

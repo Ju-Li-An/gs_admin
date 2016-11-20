@@ -8,6 +8,7 @@ var ParamsPanel = require('../components/panels/ParamsPanel.jsx');
 var PropsPanel = require('../components/panels/PropsPanel.jsx');
 var DataSetsPanel = require('../components/panels/DataSetsPanel.jsx');
 var DataSetDetailsPanel = require('../components/panels/DataSetDetailsPanel.jsx');
+var DataSetParameters = require('../components/panels/DataSetParameters.jsx');
 var TemplatePanel = require('../components/panels/TemplatePanel.jsx');
 var Editor = require('../components/editors/Editor.jsx');
 var NotifyStore = require('../stores/NotifyStore.js');
@@ -85,13 +86,16 @@ var AdminSimulateurs = React.createClass({
 				</div>
 				
 				<div className="row">
-					<div className="col-lg-4">
+					<div className="col-lg-2">
 						<DataSetsPanel/>
 					</div>
-					<div className="col-lg-3">
+					<div className="col-lg-2">
 						<DataSetDetailsPanel/>
 					</div>
-					<div className="col-lg-5">
+					<div className="col-lg-4">
+						<DataSetParameters/>
+					</div>
+					<div className="col-lg-4">
 						<TemplatePanel/>
 					</div>
 				</div>

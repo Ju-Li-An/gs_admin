@@ -29,7 +29,7 @@ var ApisPanel = React.createClass({
 	render: function() {
 		var apis = this.state.apis.map(function(api,index,array) {
 			return (
-				<Api data={api} selected={(api.name==this.state.selected.name)}/>
+				<Api data={api} selected={(api.name==this.state.selected.name)} />
 			);
 		},this);
 	

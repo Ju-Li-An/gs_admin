@@ -12,13 +12,15 @@
   "license": "BSD-2-Clause",
   "dependencies": {
     "express": "~4.13.4",
-    "react-dom": "~15.1.0",
-    "react-router": "~2.4.1",
-    "react": "~15.1.0",
+    "formsy-react": "^0.18.1",
     "morgan": "~1.7.0",
+    "react": "~15.1.0",
     "react-bootstrap": "~0.29.4",
-    "reflux": "~0.4.1",
-    "react-notification-system": "~0.2.7"
+    "react-dom": "~15.1.0",
+    "react-notification-system": "~0.2.7",
+    "react-router": "~2.4.1",
+    "react-syntax-highlight": "0.0.2",
+    "reflux": "~0.4.1"
   },
   "devDependencies": {
     "babel": "~6.5.2",

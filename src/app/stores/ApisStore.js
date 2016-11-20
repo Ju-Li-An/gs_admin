@@ -1,6 +1,7 @@
 ﻿var Reflux = require('reflux');
 var Actions= require('../actions/Actions.js');
 var ServicesStore = require('./ServicesStore.js');
+var Check = require('../util/check.js');
 
 let data = {
 	currentService:'',
@@ -229,6 +230,77 @@ var ApisStore = Reflux.createStore({
 
 
 	/**************************************************
+	* Gestion des Parametres
+	*
+	***************************************************/
+	getNewParam:function(){
+		return {
+				name:'',
+				type:'DATE'
+		};
+	},
+
+
+	onEditParam:function(origin,newParam){
+		var operation = data.selected.operation;
+		var api =  data.selected.api;
+
+		if(origin.name!=newParam.name){
+
+			var doublon = Check.paramExist(newParam.name,operation);
+
+			if(doublon.exist){
+				Actions.notify({title: data.service.basepath, message:doublon.message,level:'error'});
+				this.trigger(data);
+				return;
+			}
+
+		}
+
+		//on remplace la propriété
+		for(var id in operation.parameters){
+			if(operation.parameters[id].name == origin.name){
+				operation.parameters[id]=newParam;
+				break;
+			}
+		}
+
+
+		this.publishOperation(api.name,operation.method,operation);
+		
+	},
+
+	onAddParam:function(newParam){
+		var operation = data.selected.operation;
+	
+		var doublon = Check.paramExist(newParam.name,operation);
+
+		if(doublon.exist){
+			Actions.notify({title: data.service.basepath, message:doublon.message,level:'error'});
+			this.trigger(data);
+			return;
+		}
+
+		operation.parameters.push(newParam);
+
+		this.publishOperation(data.selected.api.name,operation.method,operation);
+	},
+
+	onDeleteParam:function(param){
+		var operation = data.selected.operation;
+		
+		for(var id in operation.parameters){
+			if(operation.parameters[id].name == param.name){
+				operation.parameters.splice(id,1);
+				break;
+			}
+		}
+
+
+		this.publishOperation(data.selected.api.name,operation.method,operation);
+	},
+
+	/**************************************************
 	* Gestion des TransferProperties
 	*
 	***************************************************/
@@ -245,11 +317,14 @@ var ApisStore = Reflux.createStore({
 		var api =  data.selected.api;
 
 		if(origin.name!=newTp.name){
-			if(operation.transferProperties.map(function(val){return val.name;}).includes(newTp.name)){
-				Actions.notify({title: data.service.basepath, message:`TP [${newTp.name}] existe déjà.`,level:'error'});
+			var doublon = Check.paramExist(newTp.name,operation);
+
+			if(doublon.exist){
+				Actions.notify({title: data.service.basepath, message:doublon.message,level:'error'});
 				this.trigger(data);
 				return;
 			}
+
 		}
 
 		//on remplace la propriété
@@ -288,11 +363,14 @@ var ApisStore = Reflux.createStore({
 	onAddTp:function(newTp){
 		var operation = data.selected.operation;
 		
-		if(operation.transferProperties.map(function(val){return val.name;}).includes(newTp.name)){
-			Actions.notify({title: data.service.basepath, message:`TP [${newTp.name}] existe déjà.`,level:'error'});
+		var doublon = Check.paramExist(newTp.name,operation);
+
+		if(doublon.exist){
+			Actions.notify({title: data.service.basepath, message:doublon.message,level:'error'});
 			this.trigger(data);
 			return;
 		}
+
 
 		if(newTp.isKey)
 			operation.keys.push(newTp.name);

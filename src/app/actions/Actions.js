@@ -27,6 +27,11 @@ var Actions = Reflux.createActions([
 	"deleteOperation",
 	"addOperation",
 	"editOperation",
+
+	// PARAMETRES
+	"deleteParam",
+	"addParam",
+	"editParam",
 	
 	// TP ACTIONS
 	"addTp",
@@ -38,6 +43,16 @@ var Actions = Reflux.createActions([
 	"selectDataset",
 	"refreshDatasetsList",
 	"changeDataSetFilter",
+
+	// DataSets PARAMETRES
+	"deleteDSParam",
+	"addDSParam",
+	"editDSParam",
+
+	// DataSets DATA
+	"deleteData",
+	"addData",
+	"editData",
 	
 	// AGENT ACTIONS
 	"selectAgent",
@@ -47,6 +62,9 @@ var Actions = Reflux.createActions([
 	// EDITOR SERVICE
 	"showEditor",
 	"closeEditor",
+
+	"disableCallback",
+	"editCallback",
 
 	"notify"
 	

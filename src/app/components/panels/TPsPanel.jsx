@@ -29,7 +29,10 @@ var TPsPanel = React.createClass({
 	},
 
 	handleCancelAdd(event){
-		this.setState({tps: this.state.tps,keys:this.state.keys,showAddForm:false});
+		this.setState({
+			tps: this.state.tps,
+			keys:this.state.keys,
+			showAddForm:false});
 	},
 
 	handleAddTp(tp){

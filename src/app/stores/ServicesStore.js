@@ -274,11 +274,6 @@ var ServicesStore = Reflux.createStore({
 		});
 	},
 
-	
-
-	
-
-
 	initData: function(){
 		data = {
 			services:[],

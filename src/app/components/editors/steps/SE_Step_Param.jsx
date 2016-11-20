@@ -1,7 +1,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Actions = require('../../../actions/Actions.js');
-var Param = require('../../basic/Param.jsx');
+var Param = require('../../basic/ParamSimple.jsx');
 var Button = require('react-bootstrap').Button;
 var Glyphicon = require('react-bootstrap').Glyphicon;
 

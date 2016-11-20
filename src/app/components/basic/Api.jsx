@@ -1,7 +1,9 @@
 var React = require('react');
 var Actions = require('../../actions/Actions.js');
 var ButtonGS = require('./ButtonGS.jsx');
-var GSTooltip = require('./GSTooltip.jsx');
+var Formsy = require('formsy-react');
+var GSInput = require('../form/GSInput.jsx');
+var GSSelect = require('../form/GSSelect.jsx');
 
 var Api = React.createClass({
 	
@@ -12,6 +14,7 @@ var Api = React.createClass({
 	getInitialState:function(){
 		return {
 			editMode:false,
+			canSubmit:false,
 			api:this.clone(this.props.data),
 		};
 	},
@@ -35,18 +38,6 @@ var Api = React.createClass({
 		event.preventDefault();
 		this.setState({editMode:true,api:this.state.api});
 	},
-
-	componentDidMount: function(){
-		this.initValidator();
-	},
-
-	componentDidUpdate: function(){
-		this.initValidator();
-	},
-	
-	initValidator: function(){
-		$('#apiEditorForm').validator();
-	},
 	
 	remove(event){
 		event.preventDefault();
@@ -63,11 +54,26 @@ var Api = React.createClass({
 		this.setState({editMode:true,data:data});
 	},
 
-	handleSubmit: function(event){
+	enableButton() {
+      this.setState({
+        canSubmit: true
+      });
+    },
+
+    disableButton() {
+      this.setState({
+        canSubmit: false
+      });
+    },
+
+     saveCurrentValuesToLocalStorage:function(model){
+		this.setState({editMode:true,param:model});
+	},
+
+	handleSubmit: function(model){
 		event.preventDefault();
-		var formData=this.state.api;
-		formData.uri=(formData.uri == null || formData.uri == undefined || formData.uri == '')? '/':formData.uri;
-		Actions.editApi(this.clone(this.props.data),formData);
+		model.uri=(model.uri == null || model.uri == undefined || model.uri == '')? '/':model.uri;
+		Actions.editApi(this.clone(this.props.data),model);
 		this.setState({editMode:false,api:this.state.api});
 	},
 	
@@ -86,25 +92,16 @@ var Api = React.createClass({
 			return (
 				<tr className={ligneActive} onClick={selectable}>
 					<td colSpan="2">
-						<form id="apiEditorForm" data-toggle="validator" role="form" className="form-inline" action="" onSubmit={this.handleSubmit}>
-							<div className="form-group form-group-xs has-feedback">
-								<GSTooltip placement="top" text="Nom">
-									<input type="text" pattern="^[\w_]*$" className="form-control" id="name" placeholder="default" value={this.state.api.name} onChange={this.updateState} required/>
-								</GSTooltip>
-								<span className="glyphicon form-control-feedback" aria-hidden="true"></span>
+						<Formsy.Form onValidSubmit={this.handleSubmit} onValid={this.enableButton} onInvalid={this.disableButton} onChange={this.saveCurrentValuesToLocalStorage} className="form-inline">
+							<GSInput tooltip="Nom" name="name" value={this.state.api.name} className="group-large" required />
+							<GSInput tooltip="URI" name="uri" value={this.state.api.uri} className="group-large" required />
+							
+							<div className="form-group group-normal">
+								<button type="submit" disabled={!this.state.canSubmit} className="btn btn-primary btn-xs">Valider</button>
 							</div>
-							<div className="form-group form-group-xs has-feedback">
-								<GSTooltip placement="top" text="URI">
-									<input type="text" pattern="^/[/.{}_&'()^@?=+[\]\#A-z0-9]*$" className="form-control" id="uri" placeholder="/" value={this.state.api.uri}  onChange={this.updateState} />
-								</GSTooltip>
-								<span className="glyphicon form-control-feedback" aria-hidden="true"></span>
-							</div>
-							<div className="form-group">
-								<button type="submit" className="btn btn-primary btn-xs" ref="submitServiceEditorForm">Valider</button>
-							</div>
-						</form>
+						</Formsy.Form>
 					</td>
-					<td>
+					<td className="paramButtons">
 						<ButtonGS handleClick={this.remove} tooltip='Supprimer' style='remove' glyph='remove'/>
 						<ButtonGS handleClick={this.cancel} tooltip='Annuler' style='remove' glyph='ban-circle'/>
 					</td>
