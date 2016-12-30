@@ -147,7 +147,7 @@ li.placeholder:before {
 }
 
 
-pre {
+/*pre {
   position: absolute;
   padding: 0;
   width: 90%;
@@ -164,7 +164,7 @@ code {
 .textarea {
   color: gray;
   opacity: 0.1;
-}
+}*/
 
 table{
   margin-bottom:10px;

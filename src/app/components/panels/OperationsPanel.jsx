@@ -19,7 +19,7 @@ var OperationsPanel = React.createClass({
 	},
 	
 	onStoreUpdate(data){
-		this.setState({operations: data.selected.api.operations,selected:data.selected.operation,showAddForm:this.state.showAddForm});
+		this.setState({operations: data.selected!=-1?data.selected.api.operations:[],selected:data.selected.operation,showAddForm:this.state.showAddForm});
 	},
 	
 	
@@ -39,11 +39,14 @@ var OperationsPanel = React.createClass({
 	
 
 	render: function() {
-		var operations = this.state.operations.map(function(operation,index,array) {
-			return (
-				<Operation data={operation} selected={(operation.method==this.state.selected.method)} />
-			);
-		},this);
+		var operations=null;
+		if(this.state.operations!=undefined){
+			operations = this.state.operations.map(function(operation,index,array) {
+				return (
+					<Operation data={operation} selected={(operation.method==this.state.selected.method)} />
+				);
+			},this);
+		}
 
 		if(this.state.showAddForm){
 			var addForm = (<Operation data={null} selected={false} onCancelAdd={this.handleCancelAdd} onAdd={this.handleAddOpe}/>);

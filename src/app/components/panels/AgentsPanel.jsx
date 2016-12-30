@@ -22,10 +22,6 @@ var AgentsPanel = React.createClass({
 		this.setState({agents: data.agents,selected:data.selected} );
 	},
 	
-	addAgent(event){
-		event.preventDefault();
-	},
-	
 	refreshList(event){
 		event.preventDefault();
 		Actions.refreshAgentList();
@@ -34,14 +30,14 @@ var AgentsPanel = React.createClass({
 	render: function() {
 		var agents = this.state.agents.map(function(agent,index,array) {
 			return (
-				<Agent agent={agent} selected={agent.id==this.state.selected.id}/>
+				<Agent agent={agent} selected={agent.hostname==this.state.selected.hostname && agent.port==this.state.selected.port}/>
 			);
 		},this);
 		
 		var links=(
 			<div className="pull-right">
 				<Button href="#" bsStyle="add" bsSize="xsmall" onClick={this.refreshList}><Glyphicon glyph="refresh" /></Button>
-				<Button href="#" bsStyle="add" bsSize="xsmall" onClick={this.addAgent}><Glyphicon glyph="plus" /></Button>
+				{/*<Button href="#" bsStyle="add" bsSize="xsmall" onClick={this.addAgent}><Glyphicon glyph="plus" /></Button>*/}
 			</div>
 		);
 		

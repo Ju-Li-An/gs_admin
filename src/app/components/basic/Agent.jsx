@@ -11,7 +11,7 @@ var Agent = React.createClass({
 	},
 	
 	remove(event){
-		event.preventDefault();
+		Actions.deleteAgent(this.props.agent);
 	},
 	
 	render: function() {

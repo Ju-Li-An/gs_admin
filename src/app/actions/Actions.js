@@ -57,6 +57,7 @@ var Actions = Reflux.createActions([
 	// AGENT ACTIONS
 	"selectAgent",
 	"disableAgent",
+	"deleteAgent",
 	"refreshAgentList",
 
 	// EDITOR SERVICE

@@ -1,6 +1,6 @@
 var React = require('react');
 var Reflux = require('reflux');
-var Highlight = require('react-syntax-highlight');
+//var Highlight = require('react-syntax-highlight');
 var Actions = require('../../actions/Actions.js');
 var DataSetsStore = require('../../stores/DataSetsStore.js');
 var Panel = require('./Panel.jsx');
@@ -35,7 +35,8 @@ var TemplatePanel = React.createClass({
 		
 		return (
 			<Panel title="Aperçu du template" links={links}>
-				<div>
+				<pre><code className="template">{content}</code></pre>
+				{/*<div>
 					<Highlight
 						lang='xml'
 						value={this.state.content}
@@ -50,7 +51,7 @@ var TemplatePanel = React.createClass({
 						  {this.state.initial}
 						</code>
 					</pre>
-		        </div>
+		        </div>*/}
 		     </Panel>
 		);
   }

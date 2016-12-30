@@ -177,7 +177,7 @@ var ServicesStore = Reflux.createStore({
 		})
 		.fail(function(){
 			// Si l'agent n'a pas répondu, on le désactive dans le Panel Agent
-			Actions.disableAgent(this);
+			Actions.disableAgent(data.agent);
 			Actions.notify({title: 'Error',message:'Agent inaccessible:'+data.agent.hostname+':'+data.agent.port,level:'error'});
 		});
 	},

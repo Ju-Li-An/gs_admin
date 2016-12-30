@@ -2,11 +2,7 @@ var Reflux = require('reflux');
 var Actions = require('../actions/Actions.js');
 
 let data = {
-	agents: [{"id":0,"hostname":"localhost","port":"9080","status":1},
-			{"id":1,"hostname":"localhost","port":"9081","status":0},
-			{"id":2,"hostname":"10.44.208.85","port":"9080","status":1},
-			{"id":3,"hostname":"10.44.208.85","port":"9081","status":1},
-			{"id":4,"hostname":"10.44.208.85","port":"9081","status":1}],
+	agents: [],
 	selected:-1,
 	currentPage:1,
 };
@@ -19,38 +15,74 @@ var AgentsStore = Reflux.createStore({
 		this.trigger(data);
 	},
 	
+	onDeleteAgent:function(agent){
+		if(data.selected.hostname==agent.hostname && data.selected.port==agent.port){
+			data.selected=-1;
+		}
+		$.ajax({
+			url: `http://localhost:3000/agent`,
+			type: "DELETE",
+			dataType: "json",
+			data: agent,
+			success: (d,textStatus,xhr) => {
+				data.agents=d;
+				this.refreshSelected();
+			},
+			error: (x, t, m) => {
+				Actions.notify({title: 'Error',message:'Impossible de supprimer un agent.',level:'error'});
+			}
+		});
+	},
 	
 	onRefreshAgentList: function(){
 		data.selected=-1;
 
 		$.ajax({
-			url: `http://localhost:3000/listAgent`,
+			url: `http://localhost:3000/agents`,
 			type: "GET",
 			dataType: "json",
 			success: (d,textStatus,xhr) => {
-				data.agents=d.agents;
-				
-				for(var index in data.agents){
-					if(data.agents[index].status===1){
-						data.selected=data.agents[index];
-						break;
-					}
-				}
-				
-				this.trigger(data);
-					
+				data.agents=d;
+				this.refreshSelected();
 			},
 			error: (x, t, m) => {
-				Actions.notify({title: 'Error',message:'Impossible de récupérer la liste des agents.',level:'errors'});
+				Actions.notify({title: 'Error',message:'Impossible de récupérer la liste des agents.',level:'error'});
 			}
 		});
 
 		
 	},
+
+	refreshSelected:function(){
+		if(data.selected==-1){
+			for(var index in data.agents){
+				if(data.agents[index].status===1){
+					data.selected=data.agents[index];
+					break;
+				}
+			}
+		}
+		this.trigger(data);
+	},
 	
 	onDisableAgent: function(agent){
-		data.agents[agent.id].status=0;
-		this.onRefreshAgentList();
+		console.log(agent);
+		if(data.selected.hostname==agent.hostname && data.selected.port==agent.port){
+			data.selected=-1;
+		}
+		$.ajax({
+			url: `http://localhost:3000/agent/disable`,
+			type: "PUT",
+			dataType: "json",
+			data: agent,
+			success: (d,textStatus,xhr) => {
+				data.agents=d;
+				this.refreshSelected();
+			},
+			error: (x, t, m) => {
+				Actions.notify({title: 'Error',message:`Impossible d'inactiver l'agent ${agent.hostname}:${agent.port}`,level:'error'});
+			}
+		});
 	},
 	
 	getDefaultData(){

@@ -11,6 +11,7 @@
   "author": "JuLiAn",
   "license": "BSD-2-Clause",
   "dependencies": {
+    "body-parser": "^1.15.2",
     "express": "~4.13.4",
     "formsy-react": "^0.18.1",
     "morgan": "~1.7.0",
